@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[43,)"
+license="MIT License"
+
+[[mods]]
+modId="betsyross"
+version="${file.jarVersion}"
+displayName="Betsy Ross"
+logoFile="logo.png"
+credits="Created by rbasamoyai"
+authors="rbasamoyai"
+description='''Large flags with images across the internets'''
+
+[[dependencies.betsyross]]
+    modId="forge"
+    mandatory=true
+    versionRange="[43,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.betsyross]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19.2,1.20)"
+    ordering="NONE"
+    side="BOTH"
