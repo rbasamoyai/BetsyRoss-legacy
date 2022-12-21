@@ -1,4 +1,6 @@
 {
   "itemGroup.betsyross": "Betsy Ross",
-  "block.betsyross.flag_block": "Flag"
+  "block.betsyross.flag_block": "Flag",
+  "block.betsyross.flag_block.tooltip.width": "Width: %s block(s)",
+  "block.betsyross.flag_block.tooltip.height": "Height %s block(s)"
 }

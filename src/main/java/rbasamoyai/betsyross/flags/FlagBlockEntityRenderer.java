@@ -11,9 +11,12 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import rbasamoyai.betsyross.BetsyRoss;
 
 public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEntity> {
 
@@ -23,74 +26,88 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 	public void render(FlagBlockEntity flag, float partialTicks, PoseStack stack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
 		if (flag.getFlagWidth() <= 0 || flag.getFlagHeight() <= 0) return;
 		String url = flag.getFlagUrl();
-		if (url != null && url.length() > 0) {
-			renderFullTexture(flag, partialTicks, stack, buffers, packedLight, packedOverlay, false);
-			renderFullTexture(flag, partialTicks, stack, buffers, packedLight, packedOverlay, true);
-		}
+		renderFullTexture(flag, partialTicks, stack, buffers, packedLight, packedOverlay, false);
+		renderFullTexture(flag, partialTicks, stack, buffers, packedLight, packedOverlay, true);
 	}
 
 	private static void renderFullTexture(FlagBlockEntity flag, float partialTicks, PoseStack stack, MultiBufferSource buffers, int packedLight, int packedOverlay, boolean flip) {
+		renderFullTexture(flag.getBlockState(), flag.getFlagUrl(), flag.getFlagWidth(), flag.getFlagHeight(), partialTicks, stack, buffers, packedLight, packedOverlay, flip);
+	}
+
+	public static void renderFullTexture(BlockState state, String url, int width, int height, float partialTicks, PoseStack stack, MultiBufferSource buffers, int packedLight, int packedOverlay, boolean flip) {
 		stack.pushPose();
 
-		stack.translate(0.5, flag.getFlagHeight(), 0.5);
+		stack.translate(0.5, height, 0.5);
 
 		Vector3f v3f = new Vector3f(0, 0, 0);
 		v3f.mulTransposePosition(stack.last().pose());
 		stack.translate(-v3f.x(), -v3f.y(), -v3f.z());
 
-		stack.mulPose(Axis.YP.rotationDegrees(-flag.getBlockState().getValue(FlagBlock.FACING).toYRot() - 90));
+		Direction dir = state.getValue(FlagBlock.FACING).getClockWise();
+
+		stack.mulPose(Axis.YP.rotationDegrees(-dir.toYRot()));
 		stack.mulPose(Axis.XP.rotationDegrees(180));
 
 		stack.translate(v3f.x(), v3f.y(), v3f.z());
 
 		stack.translate(0, 0, flip ? -0.01 : 0.01);
 
+		Direction dir1 = dir;
+
 		if (!flip) {
 			Vector3f v3f1 = new Vector3f(0, 0, 0);
 			v3f1.mulTransposePosition(stack.last().pose());
 			stack.translate(-v3f1.x(), -v3f1.y(), -v3f1.z());
 			stack.mulPose(Axis.YP.rotationDegrees(180));
-			stack.translate(v3f1.x() - flag.getFlagWidth(), v3f1.y(), v3f1.z());
+			stack.translate(v3f1.x() - width, v3f1.y(), v3f1.z());
+		} else {
+			dir1 = dir1.getOpposite();
 		}
 
-		VertexConsumer vcons = buffers.getBuffer(getFlagBuffer(flag.getFlagUrl()));
+		float nx = dir1.getStepX();
+		float ny = dir1.getStepY();
+		float nz = dir1.getStepZ();
+
+		VertexConsumer vcons = buffers.getBuffer(getFlagBuffer(url));
 		Matrix4f pose = stack.last().pose();
 		vcons.vertex(pose, 0, 0, 0)
-                .color(255, 255, 255, 255)
-                .uv(flip ? 0 : 1, 0)
-                .overlayCoords(packedOverlay)
-                .uv2(packedLight)
-                .normal(0, 0, 0)
-                .endVertex();
+				.color(255, 255, 255, 255)
+				.uv(flip ? 0 : 1, 0)
+				.overlayCoords(packedOverlay)
+				.uv2(packedLight)
+				.normal(nx, ny, nz)
+				.endVertex();
 
-        vcons.vertex(pose, 0, flag.getFlagHeight(), 0)
-                .color(255, 255, 255, 255)
-                .uv(flip ? 0 : 1, 1)
-                .overlayCoords(packedOverlay)
-                .uv2(packedLight)
-                .normal(0, 0, 0)
-                .endVertex();
+		vcons.vertex(pose, 0, height, 0)
+				.color(255, 255, 255, 255)
+				.uv(flip ? 0 : 1, 1)
+				.overlayCoords(packedOverlay)
+				.uv2(packedLight)
+				.normal(nx, ny, nz)
+				.endVertex();
 
-        vcons.vertex(pose, flag.getFlagWidth(), flag.getFlagHeight(), 0)
-                .color(255, 255, 255, 255)
-                .uv(flip ? 1 : 0, 1)
-                .overlayCoords(packedOverlay)
-                .uv2(packedLight)
-                .normal(0, 0, 0)
-                .endVertex();
+		vcons.vertex(pose, width, height, 0)
+				.color(255, 255, 255, 255)
+				.uv(flip ? 1 : 0, 1)
+				.overlayCoords(packedOverlay)
+				.uv2(packedLight)
+				.normal(nx, ny, nz)
+				.endVertex();
 
-        vcons.vertex(pose, flag.getFlagWidth(), 0, 0)
-                .color(255, 255, 255, 255)
-                .uv(flip ? 1 : 0, 0)
-                .overlayCoords(packedOverlay)
-                .uv2(packedLight)
-                .normal(0, 0, 0)
-                .endVertex();
+		vcons.vertex(pose, width, 0, 0)
+				.color(255, 255, 255, 255)
+				.uv(flip ? 1 : 0, 0)
+				.overlayCoords(packedOverlay)
+				.uv2(packedLight)
+				.normal(nx, ny, nz)
+				.endVertex();
 
 		stack.popPose();
 	}
 
 	public static RenderType getFlagBuffer(String url) {
+		if (url == null || url.length() == 0)
+			return RenderType.entityTranslucentCull(BetsyRoss.path("textures/block/default.png"));
 		ResourceLocation loc = FlagTexture.textureId(url);
 		TextureManager manager = Minecraft.getInstance().getTextureManager();
 		AbstractTexture tex = manager.getTexture(loc, MissingTextureAtlasSprite.getTexture());
