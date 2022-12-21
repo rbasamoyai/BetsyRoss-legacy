@@ -11,9 +11,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.RotationSegment;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import rbasamoyai.betsyross.BetsyRoss;
@@ -43,16 +44,16 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 		v3f.mulTransposePosition(stack.last().pose());
 		stack.translate(-v3f.x(), -v3f.y(), -v3f.z());
 
-		Direction dir = state.getValue(FlagBlock.FACING).getClockWise();
+		float dir = RotationSegment.convertToDegrees(state.getValue(FlagBlock.ROTATION));
 
-		stack.mulPose(Axis.YP.rotationDegrees(-dir.toYRot()));
+		stack.mulPose(Axis.YP.rotationDegrees(dir - 90));
 		stack.mulPose(Axis.XP.rotationDegrees(180));
 
 		stack.translate(v3f.x(), v3f.y(), v3f.z());
 
 		stack.translate(0, 0, flip ? -0.01 : 0.01);
 
-		Direction dir1 = dir;
+		float dir1 = dir;
 
 		if (!flip) {
 			Vector3f v3f1 = new Vector3f(0, 0, 0);
@@ -61,12 +62,12 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 			stack.mulPose(Axis.YP.rotationDegrees(180));
 			stack.translate(v3f1.x() - width, v3f1.y(), v3f1.z());
 		} else {
-			dir1 = dir1.getOpposite();
+			dir1 = dir1 + 180;
 		}
 
-		float nx = dir1.getStepX();
-		float ny = dir1.getStepY();
-		float nz = dir1.getStepZ();
+		float nx = Mth.sin(dir1 * Mth.DEG_TO_RAD);
+		float ny = 0;
+		float nz = Mth.cos(dir1 * Mth.DEG_TO_RAD);
 
 		VertexConsumer vcons = buffers.getBuffer(getFlagBuffer(url));
 		Matrix4f pose = stack.last().pose();

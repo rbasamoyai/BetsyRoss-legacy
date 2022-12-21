@@ -1,7 +1,6 @@
 package rbasamoyai.betsyross.flags;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,9 +28,10 @@ public class FlagItemRenderer extends BlockEntityWithoutLevelRenderer {
 		posestack.pushPose();
 
 		if (transform == ItemTransforms.TransformType.GUI) {
-			posestack.mulPose(Axis.YP.rotationDegrees(-90));
-			posestack.translate(0, 0, -0.5);
+			state = state.setValue(FlagBlock.ROTATION, 4);
 		}
+
+		posestack.translate(-0.5, 0, 0);
 
 		renderFullTexture(state, url, 1, 1, 1, posestack, buffers, light, overlay, false);
 		renderFullTexture(state, url, 1, 1, 1, posestack, buffers, light, overlay, true);

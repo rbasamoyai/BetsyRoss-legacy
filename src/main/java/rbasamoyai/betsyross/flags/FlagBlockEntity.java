@@ -1,14 +1,15 @@
 package rbasamoyai.betsyross.flags;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import rbasamoyai.betsyross.BetsyRoss;
@@ -27,8 +28,10 @@ public class FlagBlockEntity extends BlockEntity {
 
 	@Override
 	public AABB getRenderBoundingBox() {
-		Direction dir = this.getBlockState().getValue(FlagBlock.FACING);
-		return new AABB(this.getBlockPos()).expandTowards(dir.getStepX() * this.flagWidth, this.flagHeight, dir.getStepZ() * this.flagWidth);
+		float dir = RotationSegment.convertToDegrees(this.getBlockState().getValue(FlagBlock.ROTATION));
+		float f1 = Mth.sin(dir * Mth.DEG_TO_RAD);
+		float f2 = Mth.cos(dir * Mth.DEG_TO_RAD);
+		return new AABB(this.getBlockPos()).expandTowards(f1 * this.flagWidth, this.flagHeight, f2 * this.flagWidth);
 	}
 
 	public void setFlagUrl(String url) { this.flagUrl = url; }
