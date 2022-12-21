@@ -1,47 +1,76 @@
 package rbasamoyai.betsyross.flags;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.Nullable;
 import rbasamoyai.betsyross.BetsyRoss;
 
 public class FlagBlockEntity extends BlockEntity {
 
-    private String flagUrl = "";
-    private byte flagHeight = 1;
-    private byte flagWidth = 1;
+	private String flagUrl = "";
+	private byte flagHeight = 1;
+	private byte flagWidth = 1;
 
-    public FlagBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
-    }
+	public FlagBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+	}
 
-    public FlagBlockEntity(BlockPos pos, BlockState state) { this(BetsyRoss.FLAG_BLOCK_ENTITY.get(), pos, state); }
+	public FlagBlockEntity(BlockPos pos, BlockState state) { this(BetsyRoss.FLAG_BLOCK_ENTITY.get(), pos, state); }
 
-    public void setFlagUrl(String url) { this.flagUrl = url; }
-    public String getFlagUrl() { return this.flagUrl; }
+	@Override
+	public AABB getRenderBoundingBox() {
+		Direction dir = this.getBlockState().getValue(FlagBlock.FACING);
+		return new AABB(this.getBlockPos()).expandTowards(dir.getStepX() * this.flagWidth, this.flagHeight, dir.getStepZ() * this.flagWidth);
+	}
 
-    public void setFlagHeight(byte height) { this.flagHeight = height; }
-    public byte getFlagHeight() { return this.flagHeight; }
+	public void setFlagUrl(String url) { this.flagUrl = url; }
+	public String getFlagUrl() { return this.flagUrl; }
 
-    public void setFlagWidth(byte width) { this.flagWidth = width; }
-    public byte getFlagWidth() { return this.flagWidth; }
+	public void setFlagHeight(byte height) {
+		this.flagHeight = height;
+		this.setChanged();
+	}
+	public byte getFlagHeight() { return this.flagHeight; }
 
-    @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.putString("FlagUrl", this.flagUrl);
-        tag.putByte("Height", this.flagHeight);
-        tag.putByte("Width", this.flagWidth);
-    }
+	public void setFlagWidth(byte width) {
+		this.flagWidth = width;
+		this.setChanged();
+	}
+	public byte getFlagWidth() { return this.flagWidth; }
 
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        this.flagUrl = tag.getString("FlagUrl");
-        this.flagHeight = tag.getByte("Height");
-        this.flagWidth = tag.getByte("Width");
-    }
+	@Override
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
+		tag.putString("FlagUrl", this.flagUrl);
+		tag.putByte("Height", this.flagHeight);
+		tag.putByte("Width", this.flagWidth);
+	}
+
+	@Override
+	public void load(CompoundTag tag) {
+		super.load(tag);
+		this.flagUrl = tag.getString("FlagUrl");
+		this.flagHeight = tag.getByte("Height");
+		this.flagWidth = tag.getByte("Width");
+	}
+
+	@Nullable
+	@Override
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+
+	@Override
+	public CompoundTag getUpdateTag() {
+		return this.saveWithoutMetadata();
+	}
 
 }
