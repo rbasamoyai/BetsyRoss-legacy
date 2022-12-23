@@ -53,57 +53,58 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 
 		stack.translate(0, 0, flip ? -0.01 : 0.01);
 
-		float dir1 = dir;
-
 		if (!flip) {
 			Vector3f v3f1 = new Vector3f(0, 0, 0);
 			v3f1.mulTransposePosition(stack.last().pose());
 			stack.translate(-v3f1.x(), -v3f1.y(), -v3f1.z());
 			stack.mulPose(Axis.YP.rotationDegrees(180));
 			stack.translate(v3f1.x() - width, v3f1.y(), v3f1.z());
-		} else {
-			dir1 = dir1 + 180;
 		}
-
-		float nx = Mth.sin(dir1 * Mth.DEG_TO_RAD);
-		float ny = 0;
-		float nz = Mth.cos(dir1 * Mth.DEG_TO_RAD);
 
 		VertexConsumer vcons = buffers.getBuffer(getFlagBuffer(url));
 		Matrix4f pose = stack.last().pose();
+		renderSimple(vcons, pose, width, height, dir, packedLight, packedOverlay, flip);
+
+		stack.popPose();
+	}
+
+	private static void renderSimple(VertexConsumer vcons, Matrix4f pose, float w, float h, float dir, int light, int overlay, boolean flip) {
+		if (flip) dir += 180;
+		float nx = Mth.sin(dir * Mth.DEG_TO_RAD);
+		float ny = 0;
+		float nz = Mth.cos(dir * Mth.DEG_TO_RAD);
+
 		vcons.vertex(pose, 0, 0, 0)
 				.color(255, 255, 255, 255)
 				.uv(flip ? 0 : 1, 0)
-				.overlayCoords(packedOverlay)
-				.uv2(packedLight)
+				.overlayCoords(overlay)
+				.uv2(light)
 				.normal(nx, ny, nz)
 				.endVertex();
 
-		vcons.vertex(pose, 0, height, 0)
+		vcons.vertex(pose, 0, h, 0)
 				.color(255, 255, 255, 255)
 				.uv(flip ? 0 : 1, 1)
-				.overlayCoords(packedOverlay)
-				.uv2(packedLight)
+				.overlayCoords(overlay)
+				.uv2(light)
 				.normal(nx, ny, nz)
 				.endVertex();
 
-		vcons.vertex(pose, width, height, 0)
+		vcons.vertex(pose, w, h, 0)
 				.color(255, 255, 255, 255)
 				.uv(flip ? 1 : 0, 1)
-				.overlayCoords(packedOverlay)
-				.uv2(packedLight)
+				.overlayCoords(overlay)
+				.uv2(light)
 				.normal(nx, ny, nz)
 				.endVertex();
 
-		vcons.vertex(pose, width, 0, 0)
+		vcons.vertex(pose, w, 0, 0)
 				.color(255, 255, 255, 255)
 				.uv(flip ? 1 : 0, 0)
-				.overlayCoords(packedOverlay)
-				.uv2(packedLight)
+				.overlayCoords(overlay)
+				.uv2(light)
 				.normal(nx, ny, nz)
 				.endVertex();
-
-		stack.popPose();
 	}
 
 	public static RenderType getFlagBuffer(String url) {
