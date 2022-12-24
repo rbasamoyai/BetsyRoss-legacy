@@ -71,8 +71,7 @@ public class FlagBlockEntity extends BlockEntity {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
-	@Override
-	public CompoundTag getUpdateTag() {
+	@Override public CompoundTag getUpdateTag() {
 		return this.saveWithoutMetadata();
 	}
 

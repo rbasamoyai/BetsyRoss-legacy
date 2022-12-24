@@ -33,8 +33,8 @@ public class FlagItemRenderer extends BlockEntityWithoutLevelRenderer {
 
 		posestack.translate(-0.5, 0, 0);
 
-		renderFullTexture(state, url, 1, 1, 1, posestack, buffers, light, overlay, false);
-		renderFullTexture(state, url, 1, 1, 1, posestack, buffers, light, overlay, true);
+		renderFullTexture(state, url, 1, 1, 1, posestack, buffers, light, overlay, false, FlagAnimationDetail.NO_WAVE, true);
+		renderFullTexture(state, url, 1, 1, 1, posestack, buffers, light, overlay, true, FlagAnimationDetail.NO_WAVE, true);
 
 		posestack.popPose();
 	}

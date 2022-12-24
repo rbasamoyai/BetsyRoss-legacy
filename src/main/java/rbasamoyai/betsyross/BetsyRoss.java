@@ -12,13 +12,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
+import rbasamoyai.betsyross.config.BetsyRossConfig;
 import rbasamoyai.betsyross.flags.FlagBlock;
 import rbasamoyai.betsyross.flags.FlagBlockEntity;
 import rbasamoyai.betsyross.flags.FlagBlockItem;
@@ -55,6 +58,9 @@ public class BetsyRoss {
         BLOCK_ENTITY_TYPES.register(modBus);
 
         modBus.addListener(this::onCommonSetup);
+
+        ModLoadingContext mlCtx = ModLoadingContext.get();
+        mlCtx.registerConfig(ModConfig.Type.CLIENT, BetsyRossConfig.CLIENT_SPEC);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> BetsyRossClient.onCtor(modBus, forgeBus));
     }
