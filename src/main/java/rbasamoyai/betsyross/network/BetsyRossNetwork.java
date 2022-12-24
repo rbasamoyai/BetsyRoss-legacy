@@ -14,6 +14,12 @@ public class BetsyRossNetwork {
 
 		SimpleChannel network = NetworkRegistry.newSimpleChannel(BetsyRoss.path("network"), () -> VERSION, VERSION::equals, VERSION::equals);
 
+		network.messageBuilder(ClientboundSyncFlagpolePacket.class, id++)
+				.encoder(ClientboundSyncFlagpolePacket::encode)
+				.decoder(ClientboundSyncFlagpolePacket::new)
+				.consumerMainThread(ClientboundSyncFlagpolePacket::handle)
+				.add();
+
 		return network;
 	}
 

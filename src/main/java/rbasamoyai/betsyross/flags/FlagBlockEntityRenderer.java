@@ -6,6 +6,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -15,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
+import net.minecraftforge.client.model.data.ModelData;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import rbasamoyai.betsyross.BetsyRoss;
@@ -22,7 +24,11 @@ import rbasamoyai.betsyross.config.BetsyRossConfig;
 
 public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEntity> {
 
-	public FlagBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
+	private final BlockRenderDispatcher brd;
+
+	public FlagBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
+		this.brd = ctx.getBlockRenderDispatcher();
+	}
 
 	@Override
 	public void render(FlagBlockEntity flag, float partialTicks, PoseStack stack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
@@ -30,6 +36,11 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 		String url = flag.getFlagUrl();
 		renderFullTexture(flag, partialTicks, stack, buffers, packedLight, packedOverlay, false);
 		renderFullTexture(flag, partialTicks, stack, buffers, packedLight, packedOverlay, true);
+
+		BlockState flagpole = flag.getFlagPole();
+		if (flagpole != null) {
+			this.brd.renderSingleBlock(flagpole, stack, buffers, packedLight, packedOverlay, ModelData.EMPTY, null);
+		}
 	}
 
 	private static void renderFullTexture(FlagBlockEntity flag, float partialTicks, PoseStack stack, MultiBufferSource buffers, int packedLight, int packedOverlay, boolean flip) {
