@@ -200,6 +200,8 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 	}
 
 	public static RenderType getFlagBuffer(String url) {
+		if ("betsyrosslogo".equals(url))
+			return RenderType.entityTranslucentCull(BetsyRoss.path("textures/block/logo.png"));
 		if (url == null || url.length() == 0)
 			return RenderType.entityTranslucentCull(BetsyRoss.path("textures/block/default.png"));
 		ResourceLocation loc = FlagTexture.textureId(url);

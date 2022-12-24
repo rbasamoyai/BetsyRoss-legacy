@@ -38,6 +38,17 @@ public class FlagBlockItem extends BlockItem {
 	}
 
 	@Override
+	public ItemStack getDefaultInstance() {
+		ItemStack result = super.getDefaultInstance();
+		CompoundTag tag = result.getOrCreateTag();
+		CompoundTag blockData = new CompoundTag();
+		blockData.putByte("Width", (byte) 1);
+		blockData.putByte("Height", (byte) 1);
+		tag.put("BlockEntityTag", blockData);
+		return result;
+	}
+
+	@Override
 	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 		consumer.accept(new IClientItemExtensions() {
 			@Override
@@ -46,4 +57,16 @@ public class FlagBlockItem extends BlockItem {
 			}
 		});
 	}
+
+	public ItemStack getLogoStack() {
+		ItemStack result = new ItemStack(this);
+		CompoundTag tag = result.getOrCreateTag();
+		CompoundTag blockData = new CompoundTag();
+		blockData.putString("FlagUrl", "betsyrosslogo");
+		blockData.putByte("Width", (byte) 4);
+		blockData.putByte("Height", (byte) 4);
+		tag.put("BlockEntityTag", blockData);
+		return result;
+	}
+
 }
