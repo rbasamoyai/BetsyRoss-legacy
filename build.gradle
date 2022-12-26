@@ -4,7 +4,22 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
-version = '1.0'
+def getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+version = "${mc_version}-${mod_version}"
+if (System.getenv("DEV") == "true") {
+    version = "${mc_version}-${mod_version}-dev-${getGitHash()}"
+}
+if (System.getenv("CI") == "true") {
+    version = "${mc_version}-nightly-${getGitHash()}";
+}
 group = 'rbasamoyai.betsyross'
 archivesBaseName = 'betsyross'
 
