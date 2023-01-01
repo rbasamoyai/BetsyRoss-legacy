@@ -22,10 +22,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import rbasamoyai.betsyross.config.BetsyRossConfig;
-import rbasamoyai.betsyross.flags.DrapedFlagBlock;
-import rbasamoyai.betsyross.flags.FlagBlock;
-import rbasamoyai.betsyross.flags.FlagBlockEntity;
-import rbasamoyai.betsyross.flags.FlagBlockItem;
+import rbasamoyai.betsyross.flags.*;
 import rbasamoyai.betsyross.network.BetsyRossNetwork;
 
 @Mod(BetsyRoss.MOD_ID)
@@ -43,6 +40,8 @@ public class BetsyRoss {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     public static final RegistryObject<FlagBlockItem> FLAG_ITEM = ITEMS.register("flag_block",
             () -> new FlagBlockItem(FLAG_BLOCK.get(), DRAPED_FLAG_BLOCK.get(), new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<FlagStandardItem> FLAG_STANDARD = ITEMS.register("flag_standard",
+            () -> new FlagStandardItem(new Item.Properties().stacksTo(1)));
 
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
     public static final RegistryObject<BlockEntityType<FlagBlockEntity>> FLAG_BLOCK_ENTITY = BLOCK_ENTITY_TYPES.register("flag",
@@ -77,6 +76,7 @@ public class BetsyRoss {
                 .displayItems((flagSet, output, perms) -> {
                     output.accept(FLAG_ITEM.get().getDefaultInstance());
                     output.accept(FLAG_ITEM.get().getLogoStack());
+                    output.accept(FLAG_STANDARD.get().getDefaultInstance());
                 }));
     }
 
