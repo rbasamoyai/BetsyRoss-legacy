@@ -22,6 +22,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import rbasamoyai.betsyross.config.BetsyRossConfig;
+import rbasamoyai.betsyross.flags.DrapedFlagBlock;
 import rbasamoyai.betsyross.flags.FlagBlock;
 import rbasamoyai.betsyross.flags.FlagBlockEntity;
 import rbasamoyai.betsyross.flags.FlagBlockItem;
@@ -36,14 +37,16 @@ public class BetsyRoss {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     public static final RegistryObject<FlagBlock> FLAG_BLOCK = BLOCKS.register("flag_block",
             () -> new FlagBlock(FlagBlock.properties()));
+    public static final RegistryObject<DrapedFlagBlock> DRAPED_FLAG_BLOCK = BLOCKS.register("draped_flag_block",
+            () -> new DrapedFlagBlock(FlagBlock.properties()));
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     public static final RegistryObject<FlagBlockItem> FLAG_ITEM = ITEMS.register("flag_block",
-            () -> new FlagBlockItem(FLAG_BLOCK.get(), new Item.Properties().stacksTo(1)));
+            () -> new FlagBlockItem(FLAG_BLOCK.get(), DRAPED_FLAG_BLOCK.get(), new Item.Properties().stacksTo(1)));
 
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
     public static final RegistryObject<BlockEntityType<FlagBlockEntity>> FLAG_BLOCK_ENTITY = BLOCK_ENTITY_TYPES.register("flag",
-            () -> BlockEntityType.Builder.of(FlagBlockEntity::new, FLAG_BLOCK.get()).build(null));
+            () -> BlockEntityType.Builder.of(FlagBlockEntity::new, FLAG_BLOCK.get(), DRAPED_FLAG_BLOCK.get()).build(null));
 
     public static CreativeModeTab BASE_TAB = null;
 

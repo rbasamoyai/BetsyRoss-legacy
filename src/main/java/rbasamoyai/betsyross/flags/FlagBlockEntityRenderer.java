@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,32 +33,51 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 
 	@Override
 	public void render(FlagBlockEntity flag, float partialTicks, PoseStack stack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
-		if (flag.getFlagWidth() <= 0 || flag.getFlagHeight() <= 0) return;
+		int w = flag.getFlagWidth();
+		int h = flag.getFlagHeight();
+		if (w <= 0 || h <= 0) return;
 		String url = flag.getFlagUrl();
-		renderFullTexture(flag, partialTicks, stack, buffers, packedLight, packedOverlay, false);
-		renderFullTexture(flag, partialTicks, stack, buffers, packedLight, packedOverlay, true);
+		BlockState state = flag.getBlockState();
 
-		BlockState flagpole = flag.getFlagPole();
-		if (flagpole != null) {
-			this.brd.renderSingleBlock(flagpole, stack, buffers, packedLight, packedOverlay, ModelData.EMPTY, null);
-		}
-	}
-
-	private static void renderFullTexture(FlagBlockEntity flag, float partialTicks, PoseStack stack, MultiBufferSource buffers, int packedLight, int packedOverlay, boolean flip) {
-		renderFullTexture(flag.getBlockState(), flag.getFlagUrl(), flag.getFlagWidth(), flag.getFlagHeight(), partialTicks, stack, buffers, packedLight, packedOverlay, flip, BetsyRossConfig.CLIENT.animationDetail.get(), false);
-	}
-
-	public static void renderFullTexture(BlockState state, String url, int width, int height, float partialTicks, PoseStack stack, MultiBufferSource buffers, int packedLight, int packedOverlay, boolean flip, FlagAnimationDetail detail, boolean isItem) {
-		if (width <= 0 || height <= 0) return;
 		stack.pushPose();
 
-		stack.translate(0.5, height, 0.5);
+		if (state.is(BetsyRoss.FLAG_BLOCK.get())) {
+			float dir = RotationSegment.convertToDegrees(state.getValue(FlagBlock.ROTATION));
+			FlagAnimationDetail detail = BetsyRossConfig.CLIENT.animationDetail.get();
+
+			stack.pushPose();
+			stack.translate(0.5, h, 0.5);
+			renderFullTexture(state, url, w, h, partialTicks, dir, stack, buffers, packedLight, packedOverlay, false, detail, false);
+			renderFullTexture(state, url, w, h, partialTicks, dir, stack, buffers, packedLight, packedOverlay, true, detail, false);
+			stack.popPose();
+
+			BlockState flagpole = flag.getFlagPole();
+			if (flagpole != null) {
+				this.brd.renderSingleBlock(flagpole, stack, buffers, packedLight, packedOverlay, ModelData.EMPTY, null);
+			}
+		} else if (state.is(BetsyRoss.DRAPED_FLAG_BLOCK.get())) {
+			Direction dir = state.getValue(DrapedFlagBlock.FACING);
+			Direction dir1 = dir.getAxis() == Direction.Axis.X ? dir.getCounterClockWise() : dir.getClockWise();
+			float f = dir1.toYRot();
+			stack.translate(0, 1, 0);
+
+			if (dir == Direction.WEST || dir == Direction.NORTH) stack.translate(1, 0, 0);
+			if (dir == Direction.NORTH || dir == Direction.EAST) stack.translate(0, 0, 1);
+
+			renderFullTexture(state, url, w, h, partialTicks, f, stack, buffers, packedLight, packedOverlay, false, FlagAnimationDetail.NO_WAVE, false);
+			renderFullTexture(state, url, w, h, partialTicks, f, stack, buffers, packedLight, packedOverlay, true, FlagAnimationDetail.NO_WAVE, false);
+		}
+
+		stack.popPose();
+	}
+
+	public static void renderFullTexture(BlockState state, String url, int width, int height, float partialTicks, float dir, PoseStack stack, MultiBufferSource buffers, int packedLight, int packedOverlay, boolean flip, FlagAnimationDetail detail, boolean isItem) {
+		if (width <= 0 || height <= 0) return;
+		stack.pushPose();
 
 		Vector3f v3f = new Vector3f(0, 0, 0);
 		v3f.mulTransposePosition(stack.last().pose());
 		stack.translate(-v3f.x(), -v3f.y(), -v3f.z());
-
-		float dir = RotationSegment.convertToDegrees(state.getValue(FlagBlock.ROTATION));
 
 		stack.mulPose(Axis.YP.rotationDegrees(dir - 90));
 		stack.mulPose(Axis.XP.rotationDegrees(180));

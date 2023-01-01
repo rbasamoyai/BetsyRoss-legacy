@@ -1,6 +1,7 @@
 package rbasamoyai.betsyross.flags;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -11,6 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,16 +32,19 @@ import rbasamoyai.betsyross.data.BetsyRossTags;
 import rbasamoyai.betsyross.network.BetsyRossNetwork;
 import rbasamoyai.betsyross.network.ClientboundSyncFlagpolePacket;
 
-public class FlagBlock extends Block implements EntityBlock {
+public class FlagBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
 
     public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_16;
 
-    public FlagBlock(Properties properties) { super(properties); }
+    public FlagBlock(Properties properties) {
+        super(properties);
+        this.registerDefaultState(this.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
+    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(ROTATION);
+        builder.add(ROTATION).add(BlockStateProperties.WATERLOGGED);
     }
 
     @Nullable
@@ -89,6 +95,18 @@ public class FlagBlock extends Block implements EntityBlock {
         }
 
         return super.use(state, level, pos, player, hand, result);
+    }
+
+    @Override
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        return level.getBlockState(pos.below()).getMaterial().isSolid();
+    }
+
+    @Override
+    public BlockState updateShape(BlockState state, Direction dir, BlockState otherState, LevelAccessor level, BlockPos pos, BlockPos otherPos) {
+        return dir == Direction.DOWN && !state.canSurvive(level, pos)
+                ? Blocks.AIR.defaultBlockState()
+                : super.updateShape(state, dir, otherState, level, pos, otherPos);
     }
 
     public static boolean isFlagpole(Block block) {

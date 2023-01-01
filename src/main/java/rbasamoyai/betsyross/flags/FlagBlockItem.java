@@ -2,10 +2,11 @@ package rbasamoyai.betsyross.flags;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -16,10 +17,10 @@ import rbasamoyai.betsyross.BetsyRossClient;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class FlagBlockItem extends BlockItem {
+public class FlagBlockItem extends StandingAndWallBlockItem {
 
-	public FlagBlockItem(Block block, Properties properties) {
-		super(block, properties);
+	public FlagBlockItem(Block standing, Block wall, Properties properties) {
+		super(standing, wall, properties, Direction.DOWN);
 	}
 
 	@Override

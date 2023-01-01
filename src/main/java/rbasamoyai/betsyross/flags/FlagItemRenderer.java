@@ -27,14 +27,14 @@ public class FlagItemRenderer extends BlockEntityWithoutLevelRenderer {
 
 		posestack.pushPose();
 
-		if (transform == ItemTransforms.TransformType.GUI) {
-			state = state.setValue(FlagBlock.ROTATION, 4);
-		}
+		float dir = transform == ItemTransforms.TransformType.GUI ? 90 : 0;
 
-		posestack.translate(-0.5, 0, 0);
+		posestack.translate(0, 1, 0.5);
 
-		renderFullTexture(state, url, 1, 1, 1, posestack, buffers, light, overlay, false, FlagAnimationDetail.NO_WAVE, true);
-		renderFullTexture(state, url, 1, 1, 1, posestack, buffers, light, overlay, true, FlagAnimationDetail.NO_WAVE, true);
+		// TODO: hand transform
+
+		renderFullTexture(state, url, 1, 1, 1, dir, posestack, buffers, light, overlay, false, FlagAnimationDetail.NO_WAVE, true);
+		renderFullTexture(state, url, 1, 1, 1, dir, posestack, buffers, light, overlay, true, FlagAnimationDetail.NO_WAVE, true);
 
 		posestack.popPose();
 	}

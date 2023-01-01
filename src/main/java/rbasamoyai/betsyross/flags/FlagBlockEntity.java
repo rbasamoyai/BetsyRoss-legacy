@@ -1,6 +1,7 @@
 package rbasamoyai.betsyross.flags;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -35,10 +36,19 @@ public class FlagBlockEntity extends BlockEntity {
 
 	@Override
 	public AABB getRenderBoundingBox() {
-		float dir = RotationSegment.convertToDegrees(this.getBlockState().getValue(FlagBlock.ROTATION));
-		float f1 = Mth.sin(dir * Mth.DEG_TO_RAD);
-		float f2 = Mth.cos(dir * Mth.DEG_TO_RAD);
-		return new AABB(this.getBlockPos()).expandTowards(f1 * this.flagWidth, this.flagHeight, f2 * this.flagWidth);
+		BlockState state = this.getBlockState();
+		BlockPos pos = this.getBlockPos();
+		if (state.is(BetsyRoss.FLAG_BLOCK.get())) {
+			float dir = RotationSegment.convertToDegrees(state.getValue(FlagBlock.ROTATION));
+			float f1 = Mth.sin(dir * Mth.DEG_TO_RAD);
+			float f2 = Mth.cos(dir * Mth.DEG_TO_RAD);
+			return new AABB(pos).expandTowards(f1 * this.flagWidth, this.flagHeight, f2 * this.flagWidth).inflate(1);
+		}
+		if (state.is(BetsyRoss.DRAPED_FLAG_BLOCK.get())) {
+			Direction dir = state.getValue(DrapedFlagBlock.FACING);
+			return new AABB(pos.relative(dir.getOpposite()), pos.below(this.flagHeight).relative(dir.getCounterClockWise(), this.flagWidth)).inflate(1);
+		}
+		return new AABB(pos);
 	}
 
 	public String getFlagUrl() { return this.flagUrl; }
