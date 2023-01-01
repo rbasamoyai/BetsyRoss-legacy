@@ -147,10 +147,10 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 		Minecraft mc = Minecraft.getInstance();
 
 		float sample = 1;
-		float freq = Mth.PI / 4f;
+		float freq = Mth.PI / 8f;
 		float coAmp = 1 / 2f / (w <= 1e-2f ? 1 : w);
 		int sz = Mth.ceil(w * sample) + 1;
-		float phaseOffs = mc.level == null ? 0 : (float)(mc.level.getGameTime() % 8) + partialTicks;
+		float phaseOffs = mc.level == null ? 0 : (float)(mc.level.getGameTime() % 16) + partialTicks;
 
 		float[] horizDisp = new float[sz];
 		float sampleRec = 1 / sample;

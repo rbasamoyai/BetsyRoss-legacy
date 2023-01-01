@@ -1,6 +1,7 @@
 package rbasamoyai.betsyross.flags;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -35,6 +36,8 @@ public class FlagStandardRenderer extends BlockEntityWithoutLevelRenderer {
 
 	@Override
 	public void renderByItem(ItemStack stack, ItemTransforms.TransformType transform, PoseStack posestack, MultiBufferSource buffers, int light, int overlay) {
+		Minecraft mc = Minecraft.getInstance();
+
 		CompoundTag flagData = stack.getOrCreateTag();
 		BlockState state = BetsyRoss.FLAG_BLOCK.get().defaultBlockState();
 		String url = flagData.getString("FlagUrl");
@@ -45,10 +48,13 @@ public class FlagStandardRenderer extends BlockEntityWithoutLevelRenderer {
 		int height = flagData.getByte("Height");
 		FlagAnimationDetail detail = BetsyRossConfig.CLIENT.animationDetail.get();
 
+		float pt = mc.isPaused() ? mc.pausePartialTick : mc.getFrameTime();
+
 		if (transform == ItemTransforms.TransformType.GUI) {
 			width = 1;
 			height = 1;
 			detail = FlagAnimationDetail.NO_WAVE;
+			pt = 1.0f;
 		} else {
 			this.flagpole.render(posestack, STANDARD_FLAGPOLE.buffer(buffers, RenderType::entitySolid), light, overlay);
 			posestack.translate(.5, 3, 0);
@@ -60,8 +66,10 @@ public class FlagStandardRenderer extends BlockEntityWithoutLevelRenderer {
 
 		// TODO: hand transform
 
-		renderFullTexture(state, url, width, height, 1, dir, posestack, buffers, light, overlay, false, detail, true);
-		renderFullTexture(state, url, width, height, 1, dir, posestack, buffers, light, overlay, true, detail, true);
+
+
+		renderFullTexture(state, url, width, height, pt, dir, posestack, buffers, light, overlay, false, detail, true);
+		renderFullTexture(state, url, width, height, pt, dir, posestack, buffers, light, overlay, true, detail, true);
 
 		posestack.popPose();
 	}

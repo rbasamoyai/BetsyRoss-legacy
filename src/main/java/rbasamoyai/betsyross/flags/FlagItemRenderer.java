@@ -31,6 +31,10 @@ public class FlagItemRenderer extends BlockEntityWithoutLevelRenderer {
 
 		posestack.translate(0, 1, 0.5);
 
+		if (transform != ItemTransforms.TransformType.GUI) {
+			posestack.translate(0.5, 0, 0);
+		}
+
 		// TODO: hand transform
 
 		renderFullTexture(state, url, 1, 1, 1, dir, posestack, buffers, light, overlay, false, FlagAnimationDetail.NO_WAVE, true);

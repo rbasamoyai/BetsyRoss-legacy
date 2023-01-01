@@ -3,10 +3,12 @@
 	"parent": "betsyross:item/flag_block",
 	"display": {
 		"thirdperson_righthand": {
-			"rotation": [90, 0, 0]
+			"rotation": [-15, -15, 0],
+			"translation": [-1, -8, 3]
 		},
 		"thirdperson_lefthand": {
-			"rotation": [90, 0, 0]
+			"rotation": [-15, -15, 0],
+			"translation": [-1, -8, 3]
 		},
 		"firstperson_righthand": {
 			"rotation": [15, 0, 0]
