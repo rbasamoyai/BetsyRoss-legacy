@@ -42,6 +42,8 @@ public class BetsyRoss {
             () -> new FlagBlockItem(FLAG_BLOCK.get(), DRAPED_FLAG_BLOCK.get(), new Item.Properties().stacksTo(1)));
     public static final RegistryObject<FlagStandardItem> FLAG_STANDARD = ITEMS.register("flag_standard",
             () -> new FlagStandardItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<BannerStandardItem> BANNER_STANDARD = ITEMS.register("banner_standard",
+            () -> new BannerStandardItem(new Item.Properties().stacksTo(1)));
 
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
     public static final RegistryObject<BlockEntityType<FlagBlockEntity>> FLAG_BLOCK_ENTITY = BLOCK_ENTITY_TYPES.register("flag",
@@ -77,6 +79,7 @@ public class BetsyRoss {
                     output.accept(FLAG_ITEM.get().getDefaultInstance());
                     output.accept(FLAG_ITEM.get().getLogoStack());
                     output.accept(FLAG_STANDARD.get().getDefaultInstance());
+                    output.accept(BANNER_STANDARD.get().getDefaultInstance());
                 }));
     }
 

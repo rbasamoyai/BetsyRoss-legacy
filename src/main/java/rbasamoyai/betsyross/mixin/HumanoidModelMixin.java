@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import rbasamoyai.betsyross.BetsyRoss;
+//import rbasamoyai.betsyross.flags.HumanoidModelCall;
 
 @Mixin(HumanoidModel.class)
 public class HumanoidModelMixin {
@@ -28,13 +29,30 @@ public class HumanoidModelMixin {
 		ItemStack main = entity.getMainHandItem();
 		ItemStack off = entity.getOffhandItem();
 
-		if (main.is(BetsyRoss.FLAG_STANDARD.get()) && !off.is(BetsyRoss.FLAG_STANDARD.get())) {
+		if (main.is(BetsyRoss.FLAG_STANDARD.get()) && off.isEmpty()) {
 			poleArm.xRot = -1.7f;
 			poleArm.yRot = -0.6f * sign;
 
 			otherArm.xRot = -1f;
 			otherArm.yRot = 0.5f * sign;
 		}
+		if (main.is(BetsyRoss.BANNER_STANDARD.get()) && off.isEmpty()) {
+			if (flag1) {
+				poleArm.xRot = -2.3f;
+				poleArm.yRot = 0.6f * sign;
+
+				otherArm.xRot = -1.7f;
+				otherArm.yRot = -0.5f * sign;
+			} else {
+				poleArm.xRot = -1.7f;
+				poleArm.yRot = -0.6f * sign;
+
+				otherArm.xRot = -1f;
+				otherArm.yRot = 0.5f * sign;
+			}
+		}
+
+		//HumanoidModelCall.setupAnim(entity, self);
 	}
 
 }

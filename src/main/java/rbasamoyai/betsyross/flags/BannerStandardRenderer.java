@@ -1,6 +1,8 @@
 package rbasamoyai.betsyross.flags;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
@@ -13,25 +15,27 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.joml.Vector3f;
 import rbasamoyai.betsyross.BetsyRoss;
 import rbasamoyai.betsyross.BetsyRossClient;
-import rbasamoyai.betsyross.config.BetsyRossConfig;
 
 import static rbasamoyai.betsyross.flags.FlagBlockEntityRenderer.renderFullTexture;
 
-public class FlagStandardRenderer extends BlockEntityWithoutLevelRenderer {
-	public static final Material STANDARD_FLAGPOLE = new Material(TextureAtlas.LOCATION_BLOCKS, BetsyRoss.path("item/standard_flagpole"));
+public class BannerStandardRenderer extends BlockEntityWithoutLevelRenderer {
+	public static final Material STANDARD_FLAGPOLE = FlagStandardRenderer.STANDARD_FLAGPOLE;
 
 	private final ModelPart flagpole;
+	private final ModelPart bar;
 
-	public FlagStandardRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet models) {
+	public BannerStandardRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet models) {
 		super(dispatcher, models);
 		this.flagpole = models.bakeLayer(BetsyRossClient.ITEM_FLAGPOLE);
+		this.bar = models.bakeLayer(BetsyRossClient.ITEM_BANNER);
 	}
 
 	@Override
@@ -46,37 +50,44 @@ public class FlagStandardRenderer extends BlockEntityWithoutLevelRenderer {
 
 		int width = flagData.getByte("Width");
 		int height = flagData.getByte("Height");
-		FlagAnimationDetail detail = BetsyRossConfig.CLIENT.animationDetail.get();
 
 		float pt = mc.isPaused() ? mc.pausePartialTick : mc.getFrameTime();
 
 		if (transform == ItemTransforms.TransformType.GUI) {
 			width = 1;
 			height = 1;
-			detail = FlagAnimationDetail.NO_WAVE;
 			pt = 1.0f;
+			posestack.translate(0, 1, 0.5);
 		} else {
-			this.flagpole.render(posestack, STANDARD_FLAGPOLE.buffer(buffers, RenderType::entitySolid), light, overlay);
-			posestack.translate(.5, 3, 0);
+			VertexConsumer vcons = STANDARD_FLAGPOLE.buffer(buffers, RenderType::entitySolid);
+			this.flagpole.render(posestack, vcons, light, overlay);
+			this.bar.render(posestack,vcons, light, overlay);
+
+			posestack.translate(0, 1, 0.5);
+
+			float freq = Mth.PI / 75f;
+			float phaseOffs = mc.level == null ? 0 : (float)(mc.level.getGameTime() % 150) + pt;
+			float c = Mth.sin(-phaseOffs * freq);
+
+			posestack.translate(width > 1 ? -width * 0.25f : 0, 3.125, -1 / 16f);
+
+			Vector3f v3f = new Vector3f(0, 0, 0);
+			v3f.mulTransposePosition(posestack.last().pose());
+			posestack.translate(-v3f.x(), -v3f.y(), -v3f.z());
+			posestack.mulPose(Axis.XP.rotationDegrees(5 * c * c));
+			posestack.translate(v3f.x(), v3f.y(), v3f.z());
 		}
 
-		float dir = transform == ItemTransforms.TransformType.GUI ? 90 : 0;
-
-		posestack.translate(0, 1, 0.5);
-
-		renderFullTexture(state, url, width, height, pt, dir, posestack, buffers, light, overlay, false, detail, true);
-		renderFullTexture(state, url, width, height, pt, dir, posestack, buffers, light, overlay, true, detail, true);
+		renderFullTexture(state, url, width, height, pt, 90, posestack, buffers, light, overlay, false, FlagAnimationDetail.NO_WAVE, true);
+		renderFullTexture(state, url, width, height, pt, 90, posestack, buffers, light, overlay, true, FlagAnimationDetail.NO_WAVE, true);
 
 		posestack.popPose();
 	}
 
-	public static LayerDefinition defineFlagpole() {
+	public static LayerDefinition defineBannerBar() {
 		MeshDefinition mesh = new MeshDefinition();
-		mesh.getRoot().addOrReplaceChild("flagpole", CubeListBuilder.create()
-				.texOffs(0, 0).addBox(7, 0, 7, 2, 16, 2)
-				.texOffs(0, 0).addBox(7, 16, 7, 2, 16, 2)
-				.texOffs(0, 0).addBox(7, 32, 7, 2, 16, 2)
-				.texOffs(0, 0).addBox(7, 48, 7, 2, 16, 2), PartPose.ZERO);
+		mesh.getRoot().addOrReplaceChild("bar", CubeListBuilder.create()
+				.texOffs(0, 18).addBox(-2, 64, 7, 20, 2, 2), PartPose.ZERO);
 		return LayerDefinition.create(mesh, 64, 64);
 	}
 

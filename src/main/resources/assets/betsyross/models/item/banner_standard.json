@@ -1,0 +1,35 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "betsyross:item/flag_block",
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [-5, -30, 0],
+			"translation": [-1, -8, 2]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [-5, -30, 0],
+			"translation": [-1, -8, 2]
+		},
+		"firstperson_righthand": {
+			"rotation": [15, 0, 0]
+		},
+		"firstperson_lefthand": {
+			"rotation": [15, 0, 0]
+		},
+		"ground": {
+			"rotation": [90, 0, 0],
+			"translation": [0, 0, -24]
+		},
+		"head": {
+			"translation": [0, 0, 5]
+		}
+	},
+	"overrides": [
+		{
+			"predicate": {
+				"betsyross:raised": 1.0
+			},
+			"model": "betsyross:item/banner_standard_raised"
+		}
+	]
+}

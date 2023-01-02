@@ -3,12 +3,11 @@ package rbasamoyai.betsyross;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import rbasamoyai.betsyross.flags.FlagBlockEntityRenderer;
-import rbasamoyai.betsyross.flags.FlagItemRenderer;
-import rbasamoyai.betsyross.flags.FlagStandardRenderer;
+import rbasamoyai.betsyross.flags.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +22,9 @@ public class BetsyRossClient {
 
     public static void onClientSetup(FMLClientSetupEvent evt) {
         evt.enqueueWork(() -> {
-            
+            ItemProperties.register(BetsyRoss.BANNER_STANDARD.get(), BetsyRoss.path("raised"), (stack, level, entity, seed) -> {
+                return entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0;
+            });
         });
     }
 
@@ -49,8 +50,18 @@ public class BetsyRossClient {
         return FLAG_STANDARD_RENDERER;
     }
 
+    private static BlockEntityWithoutLevelRenderer BANNER_STANDARD_RENDERER;
+    public static BlockEntityWithoutLevelRenderer getBannerStandardRenderer() {
+        if (BANNER_STANDARD_RENDERER == null) {
+            Minecraft mc = Minecraft.getInstance();
+            BANNER_STANDARD_RENDERER = new BannerStandardRenderer(mc.getBlockEntityRenderDispatcher(), mc.getEntityModels());
+        }
+        return BANNER_STANDARD_RENDERER;
+    }
+
     private static final Set<ModelLayerLocation> ALL_LAYERS = new HashSet<>();
     public static final ModelLayerLocation ITEM_FLAGPOLE = registerLayer("item_flagpole");
+    public static final ModelLayerLocation ITEM_BANNER = registerLayer("item_banner");
 
     private static ModelLayerLocation registerLayer(String id) {
         ModelLayerLocation loc = new ModelLayerLocation(BetsyRoss.path(id), "main");
@@ -62,6 +73,7 @@ public class BetsyRossClient {
 
     public static void onRegisterModelLayers(EntityRenderersEvent.RegisterLayerDefinitions evt) {
         evt.registerLayerDefinition(ITEM_FLAGPOLE, FlagStandardRenderer::defineFlagpole);
+        evt.registerLayerDefinition(ITEM_BANNER, BannerStandardRenderer::defineBannerBar);
     }
 
 }
