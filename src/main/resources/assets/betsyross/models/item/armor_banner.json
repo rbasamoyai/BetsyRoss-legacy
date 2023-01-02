@@ -1,0 +1,19 @@
+{
+  "parent": "betsyross:item/flag_block",
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [-60, 0, 0]
+    },
+    "firstperson_lefthand": {
+      "rotation": [-60, 0, 0]
+    },
+    "ground": {
+      "rotation": [90, 0, 0],
+      "translation": [0, 0, -24]
+    },
+    "head": {
+      "rotation": [29.25, 0, 0],
+      "translation": [0, -13.25, 5.25]
+    }
+  }
+}

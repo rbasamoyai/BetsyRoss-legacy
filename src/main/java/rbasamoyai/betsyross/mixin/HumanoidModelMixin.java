@@ -10,12 +10,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import rbasamoyai.betsyross.BetsyRoss;
-//import rbasamoyai.betsyross.flags.HumanoidModelCall;
 
 @Mixin(HumanoidModel.class)
 public class HumanoidModelMixin {
 
-	@Inject(method = "setupAnim", at = @At("TAIL"))
+	@Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
 	public <T extends LivingEntity> void betsyross$setupAnimTail(T entity, float f, float g, float h, float i, float j, CallbackInfo ci) {
 		HumanoidModel<?> self = (HumanoidModel<?>) (Object) this;
 
@@ -51,8 +50,6 @@ public class HumanoidModelMixin {
 				otherArm.yRot = 0.5f * sign;
 			}
 		}
-
-		//HumanoidModelCall.setupAnim(entity, self);
 	}
 
 }

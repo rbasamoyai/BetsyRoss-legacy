@@ -7,7 +7,14 @@
   "mixins": [
   ],
   "client": [
-    "HumanoidModelMixin"
+    "ArmorStandRendererMixin",
+    "CustomHeadLayerMixin",
+    "HumanoidMobRendererMixin",
+    "HumanoidModelMixin",
+    "IllagerRendererMixin",
+    "PlayerRendererMixin",
+    "VillagerRendererMixin",
+    "WanderingTraderRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

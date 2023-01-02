@@ -59,9 +59,19 @@ public class BetsyRossClient {
         return BANNER_STANDARD_RENDERER;
     }
 
+    private static BlockEntityWithoutLevelRenderer ARMOR_BANNER_RENDERER;
+    public static BlockEntityWithoutLevelRenderer getArmorBannerRenderer() {
+        if (ARMOR_BANNER_RENDERER == null) {
+            Minecraft mc = Minecraft.getInstance();
+            ARMOR_BANNER_RENDERER = new ArmorBannerRenderer(mc.getBlockEntityRenderDispatcher(), mc.getEntityModels());
+        }
+        return ARMOR_BANNER_RENDERER;
+    }
+
     private static final Set<ModelLayerLocation> ALL_LAYERS = new HashSet<>();
     public static final ModelLayerLocation ITEM_FLAGPOLE = registerLayer("item_flagpole");
     public static final ModelLayerLocation ITEM_BANNER = registerLayer("item_banner");
+    public static final ModelLayerLocation ARMOR_FLAGPOLE = registerLayer("armor_flagpole");
 
     private static ModelLayerLocation registerLayer(String id) {
         ModelLayerLocation loc = new ModelLayerLocation(BetsyRoss.path(id), "main");
@@ -74,6 +84,7 @@ public class BetsyRossClient {
     public static void onRegisterModelLayers(EntityRenderersEvent.RegisterLayerDefinitions evt) {
         evt.registerLayerDefinition(ITEM_FLAGPOLE, FlagStandardRenderer::defineFlagpole);
         evt.registerLayerDefinition(ITEM_BANNER, BannerStandardRenderer::defineBannerBar);
+        evt.registerLayerDefinition(ARMOR_FLAGPOLE, ArmorBannerRenderer::defineArmorFlagpole);
     }
 
 }
