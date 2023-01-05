@@ -1,9 +1,13 @@
 package rbasamoyai.betsyross;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.stats.StatFormatter;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -19,9 +23,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import rbasamoyai.betsyross.config.BetsyRossConfig;
+import rbasamoyai.betsyross.crafting.EmbroideryTableBlock;
+import rbasamoyai.betsyross.crafting.EmbroideryTableMenu;
 import rbasamoyai.betsyross.flags.*;
 import rbasamoyai.betsyross.network.BetsyRossNetwork;
 
@@ -36,6 +43,8 @@ public class BetsyRoss {
             () -> new FlagBlock(FlagBlock.properties()));
     public static final RegistryObject<DrapedFlagBlock> DRAPED_FLAG_BLOCK = BLOCKS.register("draped_flag_block",
             () -> new DrapedFlagBlock(FlagBlock.properties()));
+    public static final RegistryObject<EmbroideryTableBlock> EMBROIDERY_TABLE_BLOCK = BLOCKS.register("embroidery_table",
+            () -> new EmbroideryTableBlock(EmbroideryTableBlock.properties()));
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     public static final RegistryObject<FlagBlockItem> FLAG_ITEM = ITEMS.register("flag_block",
@@ -46,12 +55,18 @@ public class BetsyRoss {
             () -> new BannerStandardItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<ArmorBannerItem> ARMOR_BANNER = ITEMS.register("armor_banner",
             () -> new ArmorBannerItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<BlockItem> EMBROIDERY_TABLE_ITEM = ITEMS.register("embroidery_table",
+            () -> new BlockItem(EMBROIDERY_TABLE_BLOCK.get(), new Item.Properties()));
 
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
     public static final RegistryObject<BlockEntityType<FlagBlockEntity>> FLAG_BLOCK_ENTITY = BLOCK_ENTITY_TYPES.register("flag",
             () -> BlockEntityType.Builder.of(FlagBlockEntity::new, FLAG_BLOCK.get(), DRAPED_FLAG_BLOCK.get()).build(null));
 
-    public static CreativeModeTab BASE_TAB = null;
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MOD_ID);
+    public static final RegistryObject<MenuType<EmbroideryTableMenu>> EMBROIDERY_TABLE_MENU = MENU_TYPES.register("embroidery_table",
+            () -> new MenuType<>(EmbroideryTableMenu::new));
+
+    public static final ResourceLocation INTERACT_WITH_EMBROIDERY_TABLE = path("interact_with_embroidery_table");
 
     public BetsyRoss() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -60,6 +75,8 @@ public class BetsyRoss {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BLOCK_ENTITY_TYPES.register(modBus);
+        MENU_TYPES.register(modBus);
+        modBus.addListener(this::onRegisterStats);
 
         modBus.addListener(this::onCommonSetup);
         modBus.addListener(this::onCreativeTabRegistry);
@@ -72,12 +89,24 @@ public class BetsyRoss {
 
     private void onCommonSetup(FMLCommonSetupEvent evt) {
         BetsyRossNetwork.init();
+        evt.enqueueWork(() -> {
+           Stats.CUSTOM.get(INTERACT_WITH_EMBROIDERY_TABLE, StatFormatter.DEFAULT);
+        });
+    }
+
+    private void onRegisterStats(RegisterEvent evt) {
+        registerCustomStat(evt, INTERACT_WITH_EMBROIDERY_TABLE);
+    }
+
+    private void registerCustomStat(RegisterEvent evt,  ResourceLocation loc) {
+        evt.register(BuiltInRegistries.CUSTOM_STAT.key(), loc, () -> loc);
     }
 
     private void onCreativeTabRegistry(CreativeModeTabEvent.Register evt) {
-        BASE_TAB = evt.registerCreativeModeTab(path("base"), builder -> builder.title(Component.translatable("itemGroup." + MOD_ID))
+        evt.registerCreativeModeTab(path("base"), builder -> builder.title(Component.translatable("itemGroup." + MOD_ID))
                 .icon(() -> FLAG_ITEM.get().getLogoStack())
                 .displayItems((flagSet, output, perms) -> {
+                    output.accept(EMBROIDERY_TABLE_ITEM.get().getDefaultInstance());
                     output.accept(FLAG_ITEM.get().getDefaultInstance());
                     output.accept(FLAG_ITEM.get().getLogoStack());
                     output.accept(FLAG_STANDARD.get().getDefaultInstance());

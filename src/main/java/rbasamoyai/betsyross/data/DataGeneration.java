@@ -3,6 +3,8 @@ package rbasamoyai.betsyross.data;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,8 +23,11 @@ public class DataGeneration {
 		CompletableFuture<HolderLookup.Provider> provider = evt.getLookupProvider();
 		PackOutput output = gen.getPackOutput();
 
+
 		boolean s = evt.includeServer();
-		gen.addProvider(s, new TagsGeneration(output, provider, helper));
+		TagsProvider<Block> blockTags = new BlockTagsGeneration(output, provider, helper);
+		gen.addProvider(s, blockTags);
+		gen.addProvider(s, new ItemTagsGeneration(output, provider, blockTags, helper));
 	}
 
 }

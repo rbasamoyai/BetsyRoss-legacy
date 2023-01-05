@@ -26,11 +26,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import rbasamoyai.betsyross.data.BetsyRossTags;
-import rbasamoyai.betsyross.network.BetsyRossNetwork;
-import rbasamoyai.betsyross.network.ClientboundSyncFlagpolePacket;
 
 public class FlagBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
 
@@ -78,7 +75,6 @@ public class FlagBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                     flag.setFlagPole(state1);
                     SoundType soundType = state1.getSoundType();
                     level.playSound(null, pos, soundType.getPlaceSound(), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
-                    BetsyRossNetwork.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(pos)), new ClientboundSyncFlagpolePacket(flag));
                     if (!player.isCreative()) stack.shrink(1);
                 }
                 return InteractionResult.sidedSuccess(level.isClientSide);
@@ -87,7 +83,6 @@ public class FlagBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                     BlockState oldFlagpole = flag.getFlagPole();
                     flag.setFlagPole(Blocks.AIR.defaultBlockState());
                     level.playSound(null, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0f, 1.0f);
-                    BetsyRossNetwork.NETWORK.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(pos)), new ClientboundSyncFlagpolePacket(flag));
                     if (!player.isCreative()) player.addItem(oldFlagpole.getCloneItemStack(null, level, pos, player));
                 }
                 return InteractionResult.sidedSuccess(level.isClientSide);

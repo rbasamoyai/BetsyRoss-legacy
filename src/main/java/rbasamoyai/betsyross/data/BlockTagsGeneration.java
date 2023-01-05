@@ -10,9 +10,9 @@ import rbasamoyai.betsyross.BetsyRoss;
 
 import java.util.concurrent.CompletableFuture;
 
-public class TagsGeneration extends BlockTagsProvider {
+public class BlockTagsGeneration extends BlockTagsProvider {
 
-	public TagsGeneration(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
+	public BlockTagsGeneration(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
 		super(output, provider, BetsyRoss.MOD_ID, helper);
 	}
 

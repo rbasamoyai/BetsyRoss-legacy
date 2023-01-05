@@ -5,5 +5,16 @@
   "item.betsyross.armor_banner": "Armor Banner",
   "block.betsyross.flag_block": "Flag",
   "block.betsyross.flag_block.tooltip.width": "Width: %s block(s)",
-  "block.betsyross.flag_block.tooltip.height": "Height %s block(s)"
+  "block.betsyross.flag_block.tooltip.height": "Height %s block(s)",
+  "block.betsyross.embroidery_table": "Embroidery Table",
+  "gui.betsyross.embroidery_table.url": "URL",
+  "gui.betsyross.embroidery_table.url.tip": "Tip: Use images from image hosting sites such as Reddit and Imgur to shorten your URLs",
+  "gui.betsyross.embroidery_table.reload_flags": "Reload Flags",
+  "gui.betsyross.embroidery_table.reload_flags.cooldown": "Reload Flags available in %s seconds",
+  "gui.betsyross.embroidery_table.flag_width": "Flag Width",
+  "gui.betsyross.embroidery_table.flag_height": "Flag Height",
+  "gui.betsyross.embroidery_table.sticks_required": "Sticks required: %s",
+  "gui.betsyross.embroidery_table.max_width": "Max. width: %s block(s)",
+  "gui.betsyross.embroidery_table.max_height": "Max. height: %s blocks(s)",
+  "gui.betsyross.embroidery_table.consumed_wool": "Consumes: %s wool"
 }

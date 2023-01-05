@@ -1,12 +1,14 @@
 package rbasamoyai.betsyross;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import rbasamoyai.betsyross.crafting.EmbroideryTableScreen;
 import rbasamoyai.betsyross.flags.*;
 
 import java.util.HashSet;
@@ -22,6 +24,8 @@ public class BetsyRossClient {
 
     public static void onClientSetup(FMLClientSetupEvent evt) {
         evt.enqueueWork(() -> {
+            MenuScreens.register(BetsyRoss.EMBROIDERY_TABLE_MENU.get(), EmbroideryTableScreen::new);
+
             ItemProperties.register(BetsyRoss.BANNER_STANDARD.get(), BetsyRoss.path("raised"), (stack, level, entity, seed) -> {
                 return entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0;
             });

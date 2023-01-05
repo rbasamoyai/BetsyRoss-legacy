@@ -7,7 +7,7 @@ modId="betsyross"
 version="${file.jarVersion}"
 displayName="Betsy Ross"
 logoFile="logo.png"
-credits="Created by rbasamoyai"
+credits="Created by rbasamoyai, embroidery table texture by jwxfound"
 authors="rbasamoyai"
 description='''Large flags with images across the internets'''
 
