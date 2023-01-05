@@ -17,6 +17,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rbasamoyai.betsyross.BetsyRoss;
+import rbasamoyai.betsyross.config.BetsyRossConfig;
 import rbasamoyai.betsyross.data.BetsyRossTags;
 import rbasamoyai.betsyross.network.BetsyRossNetwork;
 import rbasamoyai.betsyross.network.ServerboundSyncTableDataPacket;
@@ -154,7 +155,9 @@ public class EmbroideryTableMenu extends AbstractContainerMenu {
 	}
 
 	public int getRequiredWool() {
-		return Mth.ceil((float) this.width * (float) this.height / 4.0f); // TODO: config
+		int areaPerWool = BetsyRossConfig.SERVER.areaPerWool.get();
+		if (areaPerWool <= 0) areaPerWool = 1;
+		return Mth.ceil((float) this.width * (float) this.height / (float) areaPerWool);
 	}
 
 	private boolean hasRequiredWool(ItemStack wool) {
@@ -229,17 +232,29 @@ public class EmbroideryTableMenu extends AbstractContainerMenu {
 	}
 
 	public enum TakenItem {
-		FLAG_BLOCK(() -> 0, () -> (byte) -1, () -> (byte) -1, () -> BetsyRoss.FLAG_ITEM.get().getDefaultInstance()),
-		ARMOR_BANNER(() -> 2, () -> (byte) 1, () -> (byte) 2, () -> BetsyRoss.ARMOR_BANNER.get().getDefaultInstance()),
-		FLAG_STANDARD(() -> 3, () -> (byte) 2, () -> (byte) 2, () -> BetsyRoss.FLAG_STANDARD.get().getDefaultInstance()),
-		BANNER_STANDARD(() -> 5, () -> (byte) 2, () -> (byte) 2, () -> BetsyRoss.BANNER_STANDARD.get().getDefaultInstance());
+		FLAG_BLOCK(() -> BetsyRossConfig.SERVER.flagBlockRequiredSticks.get(),
+				() -> BetsyRossConfig.SERVER.flagBlockMaxWidth.get(),
+				() -> BetsyRossConfig.SERVER.flagBlockMaxHeight.get(),
+				() -> BetsyRoss.FLAG_ITEM.get().getDefaultInstance()),
+		ARMOR_BANNER(() -> BetsyRossConfig.SERVER.armorBannerRequiredSticks.get(),
+				() -> BetsyRossConfig.SERVER.armorBannerMaxWidth.get(),
+				() -> BetsyRossConfig.SERVER.armorBannerMaxHeight.get(),
+				() -> BetsyRoss.ARMOR_BANNER.get().getDefaultInstance()),
+		FLAG_STANDARD(() -> BetsyRossConfig.SERVER.flagStandardRequiredSticks.get(),
+				() -> BetsyRossConfig.SERVER.flagStandardMaxWidth.get(),
+				() -> BetsyRossConfig.SERVER.flagStandardMaxHeight.get(),
+				() -> BetsyRoss.FLAG_STANDARD.get().getDefaultInstance()),
+		BANNER_STANDARD(() -> BetsyRossConfig.SERVER.bannerStandardRequiredSticks.get(),
+				() -> BetsyRossConfig.SERVER.bannerStandardMaxWidth.get(),
+				() -> BetsyRossConfig.SERVER.bannerStandardMaxHeight.get(),
+				() -> BetsyRoss.BANNER_STANDARD.get().getDefaultInstance());
 
 		private final Supplier<Integer> requiredSticks;
-		private final Supplier<Byte> maxWidth;
-		private final Supplier<Byte> maxHeight;
+		private final Supplier<Integer> maxWidth;
+		private final Supplier<Integer> maxHeight;
 		private final Supplier<ItemStack> defaultInstance;
 
-		TakenItem(Supplier<Integer> requiredSticks, Supplier<Byte> maxWidth, Supplier<Byte> maxHeight, Supplier<ItemStack> defaultInstance) {
+		TakenItem(Supplier<Integer> requiredSticks, Supplier<Integer> maxWidth, Supplier<Integer> maxHeight, Supplier<ItemStack> defaultInstance) {
 			this.requiredSticks = requiredSticks;
 			this.maxWidth = maxWidth;
 			this.maxHeight = maxHeight;
@@ -247,8 +262,8 @@ public class EmbroideryTableMenu extends AbstractContainerMenu {
 		}
 
 		public int getRequiredSticks() { return this.requiredSticks.get(); }
-		public byte getMaxWidth() { return this.maxWidth.get(); }
-		public byte getMaxHeight() { return this.maxHeight.get(); }
+		public byte getMaxWidth() { return this.maxWidth.get().byteValue(); }
+		public byte getMaxHeight() { return this.maxHeight.get().byteValue(); }
 
 		public ItemStack getStack(EmbroideryTableMenu menu) {
 			ItemStack result = this.defaultInstance.get();

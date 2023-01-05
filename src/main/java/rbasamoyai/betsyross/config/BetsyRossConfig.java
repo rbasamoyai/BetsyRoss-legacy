@@ -13,4 +13,12 @@ public class BetsyRossConfig {
 		CLIENT = pair.getLeft();
 	}
 
+	public static ForgeConfigSpec SERVER_SPEC;
+	public static CfgServer SERVER;
+	static {
+		Pair<CfgServer, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder().configure(CfgServer::new);
+		SERVER_SPEC = pair.getRight();
+		SERVER = pair.getLeft();
+	}
+
 }

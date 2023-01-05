@@ -19,6 +19,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -80,9 +81,12 @@ public class BetsyRoss {
 
         modBus.addListener(this::onCommonSetup);
         modBus.addListener(this::onCreativeTabRegistry);
+        modBus.addListener(this::onConfigLoad);
+        modBus.addListener(this::onConfigReload);
 
         ModLoadingContext mlCtx = ModLoadingContext.get();
         mlCtx.registerConfig(ModConfig.Type.CLIENT, BetsyRossConfig.CLIENT_SPEC);
+        mlCtx.registerConfig(ModConfig.Type.SERVER, BetsyRossConfig.SERVER_SPEC);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> BetsyRossClient.onCtor(modBus, forgeBus));
     }
@@ -113,6 +117,14 @@ public class BetsyRoss {
                     output.accept(BANNER_STANDARD.get().getDefaultInstance());
                     output.accept(ARMOR_BANNER.get().getDefaultInstance());
                 }));
+    }
+
+    private void onConfigLoad(ModConfigEvent.Loading evt) {
+        LOGGER.debug("Loaded Betsy Ross config file {}", evt.getConfig().getFileName());
+    }
+
+    private void onConfigReload(ModConfigEvent.Reloading evt) {
+        LOGGER.debug("Reloaded Betsy Ross config file {}", evt.getConfig().getFileName());
     }
 
     public static ResourceLocation path(String path) { return new ResourceLocation(MOD_ID, path); }

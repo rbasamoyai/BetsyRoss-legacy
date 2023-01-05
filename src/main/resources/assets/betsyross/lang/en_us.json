@@ -1,12 +1,15 @@
 {
   "itemGroup.betsyross": "Betsy Ross",
+
   "item.betsyross.flag_standard": "Flag Standard",
   "item.betsyross.banner_standard": "Banner Standard",
   "item.betsyross.armor_banner": "Armor Banner",
+
   "block.betsyross.flag_block": "Flag",
   "block.betsyross.flag_block.tooltip.width": "Width: %s block(s)",
   "block.betsyross.flag_block.tooltip.height": "Height %s block(s)",
   "block.betsyross.embroidery_table": "Embroidery Table",
+
   "gui.betsyross.embroidery_table.url": "URL",
   "gui.betsyross.embroidery_table.url.tip": "Tip: Use images from image hosting sites such as Reddit and Imgur to shorten your URLs",
   "gui.betsyross.embroidery_table.reload_flags": "Reload Flags",
@@ -16,5 +19,22 @@
   "gui.betsyross.embroidery_table.sticks_required": "Sticks required: %s",
   "gui.betsyross.embroidery_table.max_width": "Max. width: %s block(s)",
   "gui.betsyross.embroidery_table.max_height": "Max. height: %s blocks(s)",
-  "gui.betsyross.embroidery_table.consumed_wool": "Consumes: %s wool"
+  "gui.betsyross.embroidery_table.consumed_wool": "Consumes: %s wool",
+
+  "config.betsyross.animationDetail": "Flag Animation Detail",
+  "config.betsyross.flagBlockRequiredSticks": "Required Sticks to Craft Flag Block",
+  "config.betsyross.flagBlockMaxWidth": "Maximum Width for Crafted Flag Block",
+  "config.betsyross.flagBlockMaxHeight": "Maximum Height for Crafted Flag Block",
+  "config.betsyross.armorBannerRequiredSticks": "Required Sticks to Craft Armor Banner",
+  "config.betsyross.armorBannerMaxWidth": "Maximum Width for Crafted Armor Banner",
+  "config.betsyross.armorBannerMaxHeight": "Maximum Height for Crafted Armor Banner",
+  "config.betsyross.flagStandardRequiredSticks": "Required Sticks to Craft Flag Standard",
+  "config.betsyross.flagStandardMaxWidth": "Maximum Width for Crafted Flag Standard",
+  "config.betsyross.flagStandardMaxHeight": "Maximum Height for Crafted Flag Standard",
+  "config.betsyross.bannerStandardRequiredSticks": "Required Sticks to Craft Banner Standard",
+  "config.betsyross.bannerStandardMaxWidth": "Maximum Width for Crafted Banner Standard",
+  "config.betsyross.bannerStandardMaxHeight": "Maximum Height for Crafted Banner Standard",
+  "config.betsyross.maxCraftableWidth": "Maximum Craftable Width",
+  "config.betsyross.maxCraftableHeight": "Maximum Craftable Height",
+  "config.betsyross.areaPerWool": "Area per Wool"
 }

@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import rbasamoyai.betsyross.BetsyRoss;
+import rbasamoyai.betsyross.config.BetsyRossConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,19 +56,28 @@ public class EmbroideryTableScreen extends AbstractContainerScreen<EmbroideryTab
 		this.refreshButton = this.addRenderableWidget(new CooldownImageButton(this.leftPos + 152, this.topPos + 71, 11,
 				11, 176, 0, EMBROIDERY_TABLE_SCREEN, this::onRefreshUrl));
 
-		// TODO config max value
 		String key = "gui." + BetsyRoss.MOD_ID + ".embroidery_table";
 		this.width = this.addRenderableWidget(new ScrollTextWidget(this.leftPos + 85, this.topPos + 22, 34, 16,
-				Component.translatable(key + ".flag_width"), (byte) 1, (byte) 16));
+				Component.translatable(key + ".flag_width"), (byte) 1, getMaxCraftableWidth()));
 		this.height = this.addRenderableWidget(new ScrollTextWidget(this.leftPos + 85, this.topPos + 44, 34, 16,
-				Component.translatable(key + ".flag_height"), (byte) 1, (byte) 16));
+				Component.translatable(key + ".flag_height"), (byte) 1, getMaxCraftableHeight()));
+	}
+
+	private static byte getMaxCraftableWidth() {
+		byte b = BetsyRossConfig.SERVER.maxCraftableWidth.get().byteValue();
+		return b > 0 ? b : Byte.MAX_VALUE;
+	}
+
+	private static byte getMaxCraftableHeight() {
+		byte b = BetsyRossConfig.SERVER.maxCraftableHeight.get().byteValue();
+		return b > 0 ? b : Byte.MAX_VALUE;
 	}
 
 	@Override
 	public void resize(Minecraft minecraft, int width, int height) {
-		String s = this.url.getValue();
-		byte w = this.width.getValue();
-		byte h = this.height.getValue();
+		String s = this.url == null ? "" : this.url.getValue();
+		byte w = this.width == null ? (byte) 1 : this.width.getValue();
+		byte h = this.height == null ? (byte) 1 : this.height.getValue();
 		super.resize(minecraft, width, height);
 		this.url.setValue(s);
 		this.width.setValue(w);
@@ -90,9 +100,9 @@ public class EmbroideryTableScreen extends AbstractContainerScreen<EmbroideryTab
 		this.renderBackground(posestack);
 		super.render(posestack, mouseX, mouseY, partialTicks);
 
-		this.url.render(posestack, mouseX, mouseY, partialTicks);
-		this.width.render(posestack, mouseX, mouseY, partialTicks);
-		this.height.render(posestack, mouseX, mouseY, partialTicks);
+		if (this.url != null) this.url.render(posestack, mouseX, mouseY, partialTicks);
+		if (this.width != null) this.width.render(posestack, mouseX, mouseY, partialTicks);
+		if (this.height != null) this.height.render(posestack, mouseX, mouseY, partialTicks);
 
 		this.renderTooltip(posestack, mouseX, mouseY);
 	}
@@ -151,14 +161,14 @@ public class EmbroideryTableScreen extends AbstractContainerScreen<EmbroideryTab
 	@Override
 	protected void containerTick() {
 		super.containerTick();
-		this.refreshButton.tickCooldownTime();
-		this.url.tick();
+		if (this.refreshButton != null) this.refreshButton.tickCooldownTime();
+		if (this.url != null) this.url.tick();
 	}
 
 	@Override
 	public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
-		if (this.width.mouseScrolled(pMouseX, pMouseY, pDelta)) return true;
-		if (this.height.mouseScrolled(pMouseX, pMouseY, pDelta)) return true;
+		if (this.width != null && this.width.mouseScrolled(pMouseX, pMouseY, pDelta)) return true;
+		if (this.height != null && this.height.mouseScrolled(pMouseX, pMouseY, pDelta)) return true;
 		return super.mouseScrolled(pMouseX, pMouseY, pDelta);
 	}
 
