@@ -70,7 +70,7 @@ public class BannerStandardRenderer extends BlockEntityWithoutLevelRenderer {
 
 			posestack.mulPose(Vector3f.YP.rotationDegrees(180));
 
-			posestack.translate(width > 1 ? -width * 0.75f : 0, 3.125, 1 / 16f);
+			posestack.translate(width > 1 ? -width * 0.75f : -1, 3.125, 1 / 16f);
 
 			posestack.mulPose(Vector3f.XP.rotationDegrees(-5 * c * c));
 		}
