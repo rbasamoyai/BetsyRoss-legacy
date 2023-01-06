@@ -93,24 +93,11 @@ mixin {
 }
 
 repositories {
-    // JEI
-    maven {
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven"
-    }
-    // JEI fallback
-    maven {
-        name = "ModMaven"
-        url = "https://modmaven.dev"
-    }
+
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.19.3-44.0.48'
-
-    //compileOnly("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
-    //compileOnly("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    //runtimeOnly("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
     testAnnotationProcessor "org.spongepowered:mixin:0.8.5:processor"
@@ -121,7 +108,7 @@ jar {
         attributes([
                 "Specification-Title"     : "betsyross",
                 "Specification-Vendor"    : "rbasamoyai",
-                "Specification-Version"   : "1.0",
+                "Specification-Version"   : "1.2",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "rbasamoyai",
