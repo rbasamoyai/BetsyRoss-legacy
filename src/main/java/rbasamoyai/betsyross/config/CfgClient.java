@@ -11,7 +11,7 @@ public class CfgClient {
 
 	public CfgClient(ForgeConfigSpec.Builder builder) {
 		this.animationDetail = builder.comment("Level of animation detail for flags to use. Only applies to certain flags.")
-				.translation("config." + BetsyRoss.MOD_ID + ".animationDetail")
+				.translation(BetsyRoss.key("config", "animationDetail"))
 				.defineEnum("animationDetail", FlagAnimationDetail.WAVE);
 	}
 

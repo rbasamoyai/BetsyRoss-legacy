@@ -129,4 +129,6 @@ public class BetsyRoss {
 
     public static ResourceLocation path(String path) { return new ResourceLocation(MOD_ID, path); }
 
+    public static String key(String prefix, String suffix) { return prefix + "." + MOD_ID + "." + suffix; }
+
 }

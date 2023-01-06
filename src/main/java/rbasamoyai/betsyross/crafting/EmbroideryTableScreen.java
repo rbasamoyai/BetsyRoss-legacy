@@ -21,6 +21,7 @@ import java.util.List;
 public class EmbroideryTableScreen extends AbstractContainerScreen<EmbroideryTableMenu> {
 
 	private static final ResourceLocation EMBROIDERY_TABLE_SCREEN = BetsyRoss.path("textures/gui/embroidery_table.png");
+	private static final String KEY = BetsyRoss.key("gui", "embroidery_table");
 
 	private static final int MAX_URL_INPUT = 256;
 
@@ -56,11 +57,10 @@ public class EmbroideryTableScreen extends AbstractContainerScreen<EmbroideryTab
 		this.refreshButton = this.addRenderableWidget(new CooldownImageButton(this.leftPos + 152, this.topPos + 71, 11,
 				11, 176, 0, EMBROIDERY_TABLE_SCREEN, this::onRefreshUrl));
 
-		String key = "gui." + BetsyRoss.MOD_ID + ".embroidery_table";
 		this.width = this.addRenderableWidget(new ScrollTextWidget(this.leftPos + 85, this.topPos + 22, 34, 16,
-				Component.translatable(key + ".flag_width"), (byte) 1, getMaxCraftableWidth()));
+				Component.translatable(KEY + ".flag_width"), (byte) 1, getMaxCraftableWidth()));
 		this.height = this.addRenderableWidget(new ScrollTextWidget(this.leftPos + 85, this.topPos + 44, 34, 16,
-				Component.translatable(key + ".flag_height"), (byte) 1, getMaxCraftableHeight()));
+				Component.translatable(KEY + ".flag_height"), (byte) 1, getMaxCraftableHeight()));
 	}
 
 	private static byte getMaxCraftableWidth() {
@@ -110,27 +110,24 @@ public class EmbroideryTableScreen extends AbstractContainerScreen<EmbroideryTab
 	@Override
 	protected void renderLabels(PoseStack pPoseStack, int pMouseX, int pMouseY) {
 		super.renderLabels(pPoseStack, pMouseX, pMouseY);
-		String key = "gui." + BetsyRoss.MOD_ID + ".embroidery_table";
-		Component c = Component.translatable(key + ".url");
+		Component c = Component.translatable(KEY + ".url");
 		this.font.draw(pPoseStack, c, 38 - this.font.width(c), 73, 4210752);
 	}
 
 	@Override
 	protected void renderTooltip(PoseStack pPoseStack, int pX, int pY) {
-		String key = "gui." + BetsyRoss.MOD_ID + ".embroidery_table";
-
 		if (this.menu.getCarried().isEmpty() && this.hoveredSlot instanceof EmbroideryTableMenu.OutputSlot out) {
 			List<Component> append = new ArrayList<>();
 			EmbroideryTableMenu.TakenItem mode = out.mode();
 
 			append.add(Component.empty());
 			if (mode.getRequiredSticks() > 0)
-				append.add(Component.translatable(key + ".sticks_required", mode.getRequiredSticks()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+				append.add(Component.translatable(KEY + ".sticks_required", mode.getRequiredSticks()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 			if (mode.getMaxWidth() > 0)
-				append.add(Component.translatable(key + ".max_height", mode.getMaxWidth()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+				append.add(Component.translatable(KEY + ".max_height", mode.getMaxWidth()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 			if (mode.getMaxHeight() > 0)
-				append.add(Component.translatable(key + ".max_height", mode.getMaxHeight()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
-			append.add(Component.translatable(key + ".consumed_wool", this.menu.getRequiredWool()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+				append.add(Component.translatable(KEY + ".max_height", mode.getMaxHeight()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+			append.add(Component.translatable(KEY + ".consumed_wool", this.menu.getRequiredWool()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 
 			List<Component> tooltip = this.getTooltipFromItem(out.getItem());
 			tooltip.addAll(append);
@@ -142,10 +139,10 @@ public class EmbroideryTableScreen extends AbstractContainerScreen<EmbroideryTab
 
 		if (this.refreshButton != null && this.refreshButton.isHoveredOrFocused()) {
 			List<Component> tooltip = new ArrayList<>();
-			tooltip.add(Component.translatable(key + ".reload_flags"));
+			tooltip.add(Component.translatable(KEY + ".reload_flags"));
 			if (this.refreshButton.getCooldownTime() > 0) {
 				int seconds = this.refreshButton.getCooldownTime() / 20;
-				tooltip.add(Component.translatable(key + ".reload_flags.cooldown", seconds).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+				tooltip.add(Component.translatable(KEY + ".reload_flags.cooldown", seconds).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 			}
 			this.renderComponentTooltip(pPoseStack, tooltip, pX, pY);
 		}
