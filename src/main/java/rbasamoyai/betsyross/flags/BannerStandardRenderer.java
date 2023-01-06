@@ -70,7 +70,7 @@ public class BannerStandardRenderer extends BlockEntityWithoutLevelRenderer {
 			float c = Mth.sin(-phaseOffs * freq);
 
 			posestack.mulPose(Axis.YP.rotationDegrees(180));
-			posestack.translate(width > 1 ? -width * 0.75f : 0, 3.125, 1 / 16f);
+			posestack.translate(width > 1 ? -width * 0.75f : -1, 3.125, 1 / 16f);
 
 			Vector3f v3f = new Vector3f(0, 0, 0);
 			v3f.mulTransposePosition(posestack.last().pose());

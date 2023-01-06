@@ -108,7 +108,7 @@ jar {
         attributes([
                 "Specification-Title"     : "betsyross",
                 "Specification-Vendor"    : "rbasamoyai",
-                "Specification-Version"   : "1.2",
+                "Specification-Version"   : "1.3",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "rbasamoyai",

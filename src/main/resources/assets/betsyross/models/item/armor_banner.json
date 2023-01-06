@@ -2,10 +2,18 @@
   "parent": "betsyross:item/flag_block",
   "display": {
     "firstperson_righthand": {
-      "rotation": [-60, 0, 0]
+      "rotation": [-60, 0, 0],
+      "scale": [0.6, 0.6, 0.6]
     },
     "firstperson_lefthand": {
-      "rotation": [-60, 0, 0]
+      "rotation": [-60, 0, 0],
+      "scale": [0.6, 0.6, 0.6]
+    },
+    "thirdperson_righthand": {
+      "scale": [0.6, 0.6, 0.6]
+    },
+    "thirdperson_lefthand": {
+      "scale": [0.6, 0.6, 0.6]
     },
     "ground": {
       "rotation": [90, 0, 0],
