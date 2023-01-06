@@ -2,21 +2,16 @@ package rbasamoyai.betsyross.flags;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import rbasamoyai.betsyross.BetsyRoss;
@@ -39,7 +34,7 @@ public class FlagBlockEntity extends BlockEntity {
 		BlockState state = this.getBlockState();
 		BlockPos pos = this.getBlockPos();
 		if (state.is(BetsyRoss.FLAG_BLOCK.get())) {
-			float dir = RotationSegment.convertToDegrees(state.getValue(FlagBlock.ROTATION));
+			float dir = state.getValue(FlagBlock.ROTATION) * 22.5f;
 			float f1 = Mth.sin(dir * Mth.DEG_TO_RAD);
 			float f2 = Mth.cos(dir * Mth.DEG_TO_RAD);
 			return new AABB(pos).expandTowards(f1 * this.flagWidth, this.flagHeight, f2 * this.flagWidth).inflate(1);
@@ -76,8 +71,7 @@ public class FlagBlockEntity extends BlockEntity {
 		this.flagUrl = tag.getString("FlagUrl");
 		this.flagHeight = tag.getByte("Height");
 		this.flagWidth = tag.getByte("Width");
-		HolderGetter<Block> holder = this.level == null ? BuiltInRegistries.BLOCK.asLookup() : this.level.holderLookup(Registries.BLOCK);
-		this.flagPole = NbtUtils.readBlockState(holder, tag.getCompound("Flagpole"));
+		this.flagPole = NbtUtils.readBlockState(tag.getCompound("Flagpole"));
 	}
 
 	@Nullable

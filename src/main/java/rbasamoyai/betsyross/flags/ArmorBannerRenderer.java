@@ -56,7 +56,7 @@ public class ArmorBannerRenderer extends BlockEntityWithoutLevelRenderer {
 			posestack.translate(.5, 2, 0);
 		}
 
-		float dir = transform == ItemTransforms.TransformType.GUI ? 90 : 0;
+		float dir = transform == ItemTransforms.TransformType.GUI ? -90 : 0;
 
 		posestack.translate(0, 1, 0.5);
 

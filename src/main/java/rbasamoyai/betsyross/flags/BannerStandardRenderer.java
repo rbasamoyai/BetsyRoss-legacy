@@ -2,7 +2,7 @@ package rbasamoyai.betsyross.flags;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
@@ -20,7 +20,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import org.joml.Vector3f;
 import rbasamoyai.betsyross.BetsyRoss;
 import rbasamoyai.betsyross.BetsyRossClient;
 
@@ -57,7 +56,7 @@ public class BannerStandardRenderer extends BlockEntityWithoutLevelRenderer {
 			width = 1;
 			height = 1;
 			pt = 1.0f;
-			posestack.translate(0, 1, 0.5);
+			posestack.translate(0, 1, 0);
 		} else {
 			VertexConsumer vcons = STANDARD_FLAGPOLE.buffer(buffers, RenderType::entitySolid);
 			this.flagpole.render(posestack, vcons, light, overlay);
@@ -69,17 +68,15 @@ public class BannerStandardRenderer extends BlockEntityWithoutLevelRenderer {
 			float phaseOffs = mc.level == null ? 0 : (float)(mc.level.getGameTime() % 150) + pt;
 			float c = Mth.sin(-phaseOffs * freq);
 
-			posestack.translate(width > 1 ? -width * 0.25f : 0, 3.125, -1 / 16f);
+			posestack.mulPose(Vector3f.YP.rotationDegrees(180));
 
-			Vector3f v3f = new Vector3f(0, 0, 0);
-			v3f.mulTransposePosition(posestack.last().pose());
-			posestack.translate(-v3f.x(), -v3f.y(), -v3f.z());
-			posestack.mulPose(Axis.XP.rotationDegrees(5 * c * c));
-			posestack.translate(v3f.x(), v3f.y(), v3f.z());
+			posestack.translate(width > 1 ? -width * 0.75f : 0, 3.125, 1 / 16f);
+
+			posestack.mulPose(Vector3f.XP.rotationDegrees(-5 * c * c));
 		}
 
-		renderFullTexture(state, url, width, height, pt, 90, posestack, buffers, light, overlay, false, FlagAnimationDetail.NO_WAVE, true);
-		renderFullTexture(state, url, width, height, pt, 90, posestack, buffers, light, overlay, true, FlagAnimationDetail.NO_WAVE, true);
+		renderFullTexture(state, url, width, height, pt, -90, posestack, buffers, light, overlay, false, FlagAnimationDetail.NO_WAVE, true);
+		renderFullTexture(state, url, width, height, pt, -90, posestack, buffers, light, overlay, true, FlagAnimationDetail.NO_WAVE, true);
 
 		posestack.popPose();
 	}

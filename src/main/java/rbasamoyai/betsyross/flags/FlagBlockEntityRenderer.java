@@ -2,7 +2,8 @@ package rbasamoyai.betsyross.flags;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -16,10 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraftforge.client.model.data.ModelData;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import rbasamoyai.betsyross.BetsyRoss;
 import rbasamoyai.betsyross.config.BetsyRossConfig;
 
@@ -42,7 +40,7 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 		stack.pushPose();
 
 		if (state.is(BetsyRoss.FLAG_BLOCK.get())) {
-			float dir = RotationSegment.convertToDegrees(state.getValue(FlagBlock.ROTATION));
+			float dir = state.getValue(FlagBlock.ROTATION) * 22.5f;
 			FlagAnimationDetail detail = BetsyRossConfig.CLIENT.animationDetail.get();
 
 			stack.pushPose();
@@ -57,7 +55,7 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 			}
 		} else if (state.is(BetsyRoss.DRAPED_FLAG_BLOCK.get())) {
 			Direction dir = state.getValue(DrapedFlagBlock.FACING);
-			Direction dir1 = dir.getAxis() == Direction.Axis.X ? dir.getCounterClockWise() : dir.getClockWise();
+			Direction dir1 = dir.getCounterClockWise();
 			float f = dir1.toYRot();
 			stack.translate(0, 1, 0);
 
@@ -75,14 +73,8 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 		if (width <= 0 || height <= 0) return;
 		stack.pushPose();
 
-		Vector3f v3f = new Vector3f(0, 0, 0);
-		v3f.mulTransposePosition(stack.last().pose());
-		stack.translate(-v3f.x(), -v3f.y(), -v3f.z());
-
-		stack.mulPose(Axis.YP.rotationDegrees(dir - 90));
-		stack.mulPose(Axis.XP.rotationDegrees(180));
-
-		stack.translate(v3f.x(), v3f.y(), v3f.z());
+		stack.mulPose(Vector3f.YP.rotationDegrees(-dir - 90));
+		stack.mulPose(Vector3f.XP.rotationDegrees(180));
 
 		stack.translate(0, 0, flip ? -0.01 : 0.01);
 
@@ -101,11 +93,8 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 		float nz = isItem ? 0 : flip ? 1 : -1;
 
 		if (!flip) {
-			Vector3f v3f1 = new Vector3f(0, 0, 0);
-			v3f1.mulTransposePosition(stack.last().pose());
-			stack.translate(-v3f1.x(), -v3f1.y(), -v3f1.z());
-			stack.mulPose(Axis.YP.rotationDegrees(180));
-			stack.translate(v3f1.x() - w, v3f1.y(), v3f1.z());
+			stack.mulPose(Vector3f.YP.rotationDegrees(180));
+			stack.translate(- w, 0, 0);
 		}
 
 		Matrix4f pose = stack.last().pose();
@@ -160,25 +149,35 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 
 		Vector3f[] normals = new Vector3f[sz];
 		for (int i = 0 ; i < sz; ++i) {
-			if (i == 0) normals[i] = new Vector3f(sampleRec, 0, i + 1 == sz ? 0 : -horizDisp[i]).normalize(); // 90 deg rotation ccw
-			else if (i + 1 == sz) normals[i] = new Vector3f(sampleRec, 0, horizDisp[i]).normalize(); // 90 deg rotation cw
-			else { // https://math.stackexchange.com/a/2285989 for algorithm
+			if (i == 0) {
+				Vector3f vec = new Vector3f(sampleRec, 0, i + 1 == sz ? 0 : -horizDisp[i]);
+				vec.normalize();
+				normals[i] = vec; // 90 deg rotation ccw
+			} else if (i + 1 == sz) {
+				Vector3f vec = new Vector3f(sampleRec, 0, horizDisp[i]);
+				vec.normalize();
+				normals[i] = vec; // 90 deg rotation cw
+			} else { // https://math.stackexchange.com/a/2285989 for algorithm
 				Vector3f vec1 = new Vector3f(horizDisp[i - 1], 0, -sampleRec);
-				float len1 = vec1.length();
+				float len1 = length(vec1);
 				Vector3f vec2 = new Vector3f(horizDisp[i + 1], 0, sampleRec);
-				float len2 = vec2.length();
-				Vector3f vec3 = vec1.mul(len2).add(vec2.mul(len1));
-				if (vec3.lengthSquared() <= 1e-4d) vec3 = new Vector3f(sampleRec, 0, -horizDisp[i]);
+				float len2 = length(vec2);
+
+				Vector3f vec3 = vec1.copy();
+				vec3.mul(len2);
+				Vector3f vec4 = vec2.copy();
+				vec4.mul(len1);
+				vec3.add(vec4);
+
+				if (lengthSquared(vec3) <= 1e-4d) vec3 = new Vector3f(sampleRec, 0, -horizDisp[i]);
 				if (!flip) vec3.mul(-1);
-				normals[i] = vec3.normalize();
+				vec3.normalize();
+				normals[i] = vec3;
 			}
 		}
 
 		if (!flip) {
-			Vector3f v3f1 = new Vector3f(0, 0, 0);
-			v3f1.mulTransposePosition(stack.last().pose());
-			stack.translate(-v3f1.x(), -v3f1.y(), -v3f1.z());
-			stack.translate(v3f1.x() + w, v3f1.y(), v3f1.z());
+			stack.translate(w, 0, 0);
 		}
 
 		Matrix4f pose = stack.last().pose();
@@ -201,7 +200,7 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 					.uv(u1, 0)
 					.overlayCoords(overlay)
 					.uv2(light)
-					.normal(n1.x, n1.y, n1.z)
+					.normal(n1.x(), n1.y(), n1.z())
 					.endVertex();
 
 			vcons.vertex(pose, w1, h, z1)
@@ -209,7 +208,7 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 					.uv(u1, 1)
 					.overlayCoords(overlay)
 					.uv2(light)
-					.normal(n1.x, n1.y, n1.z)
+					.normal(n1.x(), n1.y(), n1.z())
 					.endVertex();
 
 			vcons.vertex(pose, w2, h, z2)
@@ -217,7 +216,7 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 					.uv(u2, 1)
 					.overlayCoords(overlay)
 					.uv2(light)
-					.normal(n2.x, n2.y, n2.z)
+					.normal(n2.x(), n2.y(), n2.z())
 					.endVertex();
 
 			vcons.vertex(pose, w2, 0, z2)
@@ -225,9 +224,18 @@ public class FlagBlockEntityRenderer implements BlockEntityRenderer<FlagBlockEnt
 					.uv(u2, 0)
 					.overlayCoords(overlay)
 					.uv2(light)
-					.normal(n2.x, n2.y, n2.z)
+					.normal(n2.x(), n2.y(), n2.z())
 					.endVertex();
 		}
+	}
+
+	private static float lengthSquared(Vector3f v3f) {
+		return v3f.x() * v3f.x() + v3f.y() * v3f.y() + v3f.z() * v3f.z();
+	}
+
+	private static float length(Vector3f v3f) {
+		float f = lengthSquared(v3f);
+		return f < Float.MIN_NORMAL ? 0 : Mth.sqrt(f);
 	}
 
 	public static RenderType getFlagBuffer(String url) {

@@ -2,7 +2,6 @@ package rbasamoyai.betsyross.flags;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +19,7 @@ import java.util.function.Consumer;
 public class FlagBlockItem extends StandingAndWallBlockItem {
 
 	public FlagBlockItem(Block standing, Block wall, Properties properties) {
-		super(standing, wall, properties, Direction.DOWN);
+		super(standing, wall, properties);
 	}
 
 	@Override

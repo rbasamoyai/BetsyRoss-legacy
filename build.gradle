@@ -29,7 +29,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'parchment', version: '2022.12.18-1.19.3'
+    mappings channel: 'parchment', version: '2022.11.27-1.19.2'
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
@@ -93,24 +93,11 @@ mixin {
 }
 
 repositories {
-    // JEI
-    maven {
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven"
-    }
-    // JEI fallback
-    maven {
-        name = "ModMaven"
-        url = "https://modmaven.dev"
-    }
+
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.3-44.0.48'
-
-    //compileOnly("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
-    //compileOnly("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    //runtimeOnly("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.3'
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
     testAnnotationProcessor "org.spongepowered:mixin:0.8.5:processor"
@@ -121,7 +108,7 @@ jar {
         attributes([
                 "Specification-Title"     : "betsyross",
                 "Specification-Vendor"    : "rbasamoyai",
-                "Specification-Version"   : "1.0",
+                "Specification-Version"   : "1.1",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "rbasamoyai",

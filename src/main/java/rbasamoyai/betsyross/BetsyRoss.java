@@ -1,19 +1,18 @@
 package rbasamoyai.betsyross;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -69,6 +68,8 @@ public class BetsyRoss {
 
     public static final ResourceLocation INTERACT_WITH_EMBROIDERY_TABLE = path("interact_with_embroidery_table");
 
+    public static final CreativeModeTab MOD_GROUP = new ModGroup();
+
     public BetsyRoss() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
@@ -80,7 +81,6 @@ public class BetsyRoss {
         modBus.addListener(this::onRegisterStats);
 
         modBus.addListener(this::onCommonSetup);
-        modBus.addListener(this::onCreativeTabRegistry);
         modBus.addListener(this::onConfigLoad);
         modBus.addListener(this::onConfigReload);
 
@@ -103,20 +103,7 @@ public class BetsyRoss {
     }
 
     private void registerCustomStat(RegisterEvent evt,  ResourceLocation loc) {
-        evt.register(BuiltInRegistries.CUSTOM_STAT.key(), loc, () -> loc);
-    }
-
-    private void onCreativeTabRegistry(CreativeModeTabEvent.Register evt) {
-        evt.registerCreativeModeTab(path("base"), builder -> builder.title(Component.translatable("itemGroup." + MOD_ID))
-                .icon(() -> FLAG_ITEM.get().getLogoStack())
-                .displayItems((flagSet, output, perms) -> {
-                    output.accept(EMBROIDERY_TABLE_ITEM.get().getDefaultInstance());
-                    output.accept(FLAG_ITEM.get().getDefaultInstance());
-                    output.accept(FLAG_ITEM.get().getLogoStack());
-                    output.accept(FLAG_STANDARD.get().getDefaultInstance());
-                    output.accept(BANNER_STANDARD.get().getDefaultInstance());
-                    output.accept(ARMOR_BANNER.get().getDefaultInstance());
-                }));
+        evt.register(Registry.CUSTOM_STAT.key(), loc, () -> loc);
     }
 
     private void onConfigLoad(ModConfigEvent.Loading evt) {

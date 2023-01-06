@@ -57,9 +57,9 @@ public class EmbroideryTableScreen extends AbstractContainerScreen<EmbroideryTab
 		this.refreshButton = this.addRenderableWidget(new CooldownImageButton(this.leftPos + 152, this.topPos + 71, 11,
 				11, 176, 0, EMBROIDERY_TABLE_SCREEN, this::onRefreshUrl));
 
-		this.width = this.addRenderableWidget(new ScrollTextWidget(this.leftPos + 85, this.topPos + 22, 34, 16,
+		this.width = this.addRenderableWidget(new ScrollTextWidget(this, this.leftPos + 85, this.topPos + 22, 34, 16,
 				Component.translatable(KEY + ".flag_width"), (byte) 1, getMaxCraftableWidth()));
-		this.height = this.addRenderableWidget(new ScrollTextWidget(this.leftPos + 85, this.topPos + 44, 34, 16,
+		this.height = this.addRenderableWidget(new ScrollTextWidget(this, this.leftPos + 85, this.topPos + 44, 34, 16,
 				Component.translatable(KEY + ".flag_height"), (byte) 1, getMaxCraftableHeight()));
 	}
 

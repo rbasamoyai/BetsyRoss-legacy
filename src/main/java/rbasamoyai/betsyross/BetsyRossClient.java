@@ -6,6 +6,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import rbasamoyai.betsyross.crafting.EmbroideryTableScreen;
@@ -20,6 +21,7 @@ public class BetsyRossClient {
         modBus.addListener(BetsyRossClient::onClientSetup);
         modBus.addListener(BetsyRossClient::onRendererRegistry);
         modBus.addListener(BetsyRossClient::onRegisterModelLayers);
+        modBus.addListener(BetsyRossClient::onTextureStitch);
     }
 
     public static void onClientSetup(FMLClientSetupEvent evt) {
@@ -34,6 +36,11 @@ public class BetsyRossClient {
 
     public static void onRendererRegistry(EntityRenderersEvent.RegisterRenderers evt) {
         evt.registerBlockEntityRenderer(BetsyRoss.FLAG_BLOCK_ENTITY.get(), FlagBlockEntityRenderer::new);
+    }
+
+    public static void onTextureStitch(TextureStitchEvent.Pre evt) {
+        evt.addSprite(BetsyRoss.path("item/stick_no_item"));
+        evt.addSprite(BetsyRoss.path("item/standard_flagpole"));
     }
 
     private static BlockEntityWithoutLevelRenderer FLAG_ITEM_RENDERER;
