@@ -69,12 +69,13 @@ public class BannerStandardRenderer extends BlockEntityWithoutLevelRenderer {
 			float phaseOffs = mc.level == null ? 0 : (float)(mc.level.getGameTime() % 150) + pt;
 			float c = Mth.sin(-phaseOffs * freq);
 
-			posestack.translate(width > 1 ? -width * 0.25f : 0, 3.125, -1 / 16f);
+			posestack.mulPose(Axis.YP.rotationDegrees(180));
+			posestack.translate(width > 1 ? -width * 0.75f : 0, 3.125, 1 / 16f);
 
 			Vector3f v3f = new Vector3f(0, 0, 0);
 			v3f.mulTransposePosition(posestack.last().pose());
 			posestack.translate(-v3f.x(), -v3f.y(), -v3f.z());
-			posestack.mulPose(Axis.XP.rotationDegrees(5 * c * c));
+			posestack.mulPose(Axis.XP.rotationDegrees(-5 * c * c));
 			posestack.translate(v3f.x(), v3f.y(), v3f.z());
 		}
 
